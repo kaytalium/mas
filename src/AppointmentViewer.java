@@ -2,25 +2,40 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import com.toedter.calendar.JCalendar;
 import java.awt.Cursor;
 import java.awt.Rectangle;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.AbstractListModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
+import javax.swing.border.LineBorder;
 
 public class AppointmentViewer extends JFrame {
 
 	private JPanel contentPane;
+	private DatabaseConnection conn = new DatabaseConnection("mas");
 
 	/**
 	 * Launch the application.
@@ -60,16 +75,16 @@ public class AppointmentViewer extends JFrame {
 		panel.setForeground(Color.WHITE);
 				
 		JLabel lblNewLabel = new JLabel("MAS");
-		lblNewLabel.setBounds(10, 20, 124, 58);
+		lblNewLabel.setBounds(58, 11, 78, 41);
 		panel.add(lblNewLabel);
 		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 50));
+		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 32));
 		
 		JLabel lblNewLabel_1 = new JLabel("Medical Appointment System");
-		lblNewLabel_1.setBounds(10, 77, 212, 20);
+		lblNewLabel_1.setBounds(58, 40, 212, 20);
 		panel.add(lblNewLabel_1);
 		lblNewLabel_1.setForeground(Color.WHITE);
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 17));
+		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		
 		JLabel lblApp = new JLabel("Manage Appointments");
 		lblApp.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -78,18 +93,78 @@ public class AppointmentViewer extends JFrame {
 		lblApp.setFont(new Font("Times New Roman", Font.BOLD, 22));
 		lblApp.setForeground(Color.WHITE);
 		
-		JList<AppointmentItem> list = new JList<AppointmentItem>();
-		list.setModel(new AbstractListModel<AppointmentItem>() {
-			AppointmentItem[] values = new AppointmentItem[] {new AppointmentItem("Jan 23, 2018"), new AppointmentItem("Jan 23, 2018"), new AppointmentItem("Jan 23, 2018")};
-			public int getSize() {
-				return values.length;
+		
+		//check if coming from the patient list view with a patient ID, else show new 
+		String query = "SELECT * FROM `appointment` WHERE `appointment_date`>='"+Helper.getTodayDateTimeStamp(TimeOfDay.start)+"' AND `appointment_date`<'"+Helper.getTodayDateTimeStamp(TimeOfDay.end)+"'"; 
+		ResultSet rs = conn.executeStatementReturnResult(query);
+		
+		class PanelRenderer implements ListCellRenderer<Object> {
+
+		    @Override
+		    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+		    	AppointmentItem renderer = (AppointmentItem) value;
+		        renderer.setBackground(isSelected ? Color.lightGray : list.getBackground());
+		        return renderer;
+		    }
+		}
+		
+		
+		
+		try {
+			
+			//get the size of the row 
+			rs.last();
+		    int size = rs.getRow();
+		    rs.beforeFirst();
+		    
+			JLabel lblOfPatients = new JLabel();
+			if(size>0) {
+				lblOfPatients.setText(size+" patients with appointments today");
 			}
-			public AppointmentItem getElementAt(int index) {
-				return values[index];
+			else if(size == 0) {
+				lblOfPatients.setText("No Appointment for Today");
 			}
-		});
-		list.setBounds(10, 171, 224, 369);
-		panel.add(list);
+			lblOfPatients.setBounds(10, 187, 212, 14);
+			panel.add(lblOfPatients);
+			
+			DefaultListModel<JPanel> model = new DefaultListModel<JPanel>();
+			while(rs.next()) {
+				JPanel aItem = new AppointmentItem(Helper.dateFormatter("MMMM dd, yyyy",new Date(rs.getDate("appointment_date").getTime()))); 
+				model.addElement(aItem);
+			}
+			
+			JScrollPane scrollPane = new JScrollPane();
+			scrollPane.setBounds(10, 212, 212, 266);
+			final JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+			 scrollBar.addAdjustmentListener(new AdjustmentListener() {
+		            @Override
+		            public void adjustmentValueChanged(AdjustmentEvent e) {
+		                System.out.println("JScrollBar's current value = " + scrollBar.getValue());
+		            }
+		        });
+			panel.add(scrollPane);
+			
+			JList<JPanel> list = new JList<JPanel>(model);
+			scrollPane.setColumnHeaderView(list);
+			list.setFixedCellHeight(40);
+			list.setBackground(new Color(255, 165, 0));
+			list.setBorder(null);
+			list.setCellRenderer(new PanelRenderer());
+			
+			JLabel label = new JLabel("");
+			label.setIcon(new ImageIcon(AppointmentViewer.class.getResource("/icons/icons8_Stethoscope_64px_3.png")));
+			label.setBounds(20, 29, 64, 64);
+			panel.add(label);
+			
+			
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(Color.WHITE);

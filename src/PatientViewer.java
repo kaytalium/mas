@@ -185,9 +185,9 @@ public class PatientViewer extends JFrame {
 		try {
 			while(rs.next()) {
 				lbl_fullname.setText(rs.getString("title")+" "+rs.getString("first_name")+" "+rs.getString("last_name"));
-				lbl_dob.setText(DateConverter.dateFormatter("MMMM dd, yyyy",new Date(rs.getDate("dob").getTime())));
+				lbl_dob.setText(Helper.dateFormatter("MMMM dd, yyyy",new Date(rs.getDate("dob").getTime())));
 				//calculate the age based on dob 
-				lbl_age_display.setText(DateConverter.getAge(new Date(rs.getDate("dob").getTime())).toString());
+				lbl_age_display.setText(Helper.getAge(new Date(rs.getDate("dob").getTime())).toString());
 				lbl_gender.setText(rs.getString("gender"));
 				lbl_contact.setText(rs.getString("contact"));
 				lbl_email.setText(rs.getString("email"));

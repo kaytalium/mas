@@ -26,6 +26,10 @@ import javax.swing.SwingConstants;
 
 public class MainWindow extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3443174621881190718L;
 	private JPanel contentPane;
 	private JPanel pl_btn_pl;
 
@@ -162,6 +166,10 @@ public class MainWindow extends JFrame {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				mouseLeave(pl_btn_ap);
+			}
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				new AppointmentViewer().setVisible(true);
 			}
 		});
 		pl_btn_ap.setLayout(null);
