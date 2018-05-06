@@ -24,6 +24,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import java.awt.Rectangle;
+import java.awt.Insets;
+import java.awt.Dimension;
+import javax.swing.border.CompoundBorder;
 
 public class MainWindow extends JFrame {
 
@@ -61,6 +68,96 @@ public class MainWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 815, 594);
 		setLocationRelativeTo(null);
+		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBorderPainted(false);
+		menuBar.setBorder(new LineBorder(new Color(192, 192, 192)));
+		menuBar.setPreferredSize(new Dimension(0, 25));
+		menuBar.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+		menuBar.setBounds(new Rectangle(0, 0, 0, 150));
+		menuBar.setBackground(new Color(255, 255, 255));
+		menuBar.setBounds(0, 0, 500, 10);
+		setJMenuBar(menuBar);
+		
+		JMenu mnFile = new JMenu("File");
+		mnFile.setPreferredSize(new Dimension(50, 22));
+		mnFile.setMargin(new Insets(0, 10, 0, 0));
+		mnFile.setIconTextGap(6);
+		mnFile.setHorizontalAlignment(SwingConstants.CENTER);
+		menuBar.add(mnFile);
+		
+		JMenu mnNew = new JMenu("New");
+		mnNew.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_File_32px.png")));
+		mnNew.setPreferredSize(new Dimension(250, 40));
+		mnFile.add(mnNew);
+		
+		JMenuItem mntmNewPatient = new JMenuItem("New Patient");
+		mntmNewPatient.setPreferredSize(new Dimension(190, 35));
+		mnNew.add(mntmNewPatient);
+		
+		JMenuItem mntmNewAppointment = new JMenuItem("New Appointment");
+		mntmNewAppointment.setPreferredSize(new Dimension(141, 35));
+		mnNew.add(mntmNewAppointment);
+		
+		JMenu mnOpen = new JMenu("Open");
+		mnOpen.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Open_32px.png")));
+		mnOpen.setPreferredSize(new Dimension(77, 40));
+		mnFile.add(mnOpen);
+		
+		JMenuItem mntmAppointment = new JMenuItem("Appointment");
+		mntmAppointment.setPreferredSize(new Dimension(190, 35));
+		mnOpen.add(mntmAppointment);
+		
+		JMenuItem mntmPatientRecord = new JMenuItem("Patient Record");
+		mntmPatientRecord.setPreferredSize(new Dimension(121, 35));
+		mnOpen.add(mntmPatientRecord);
+		
+		JMenu mnPayment = new JMenu("Payment");
+		mnPayment.setPreferredSize(new Dimension(95, 35));
+		mnOpen.add(mnPayment);
+		
+		JMenuItem mntmMakeAPayment = new JMenuItem("Make a Payment");
+		mntmMakeAPayment.setPreferredSize(new Dimension(150, 35));
+		mnPayment.add(mntmMakeAPayment);
+		
+		JMenuItem mntmViewInvoice = new JMenuItem("View Invoice");
+		mntmViewInvoice.setPreferredSize(new Dimension(109, 35));
+		mnPayment.add(mntmViewInvoice);
+		
+		JSeparator separator = new JSeparator();
+		mnFile.add(separator);
+		
+		JMenuItem mntmClose = new JMenuItem("Exit");
+		mntmClose.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Exit_32px.png")));
+		mntmClose.setPreferredSize(new Dimension(73, 40));
+		mnFile.add(mntmClose);
+		
+		JMenu mnProfile = new JMenu("Profile");
+		mnProfile.setPreferredSize(new Dimension(56, 22));
+		menuBar.add(mnProfile);
+		
+		JMenuItem mntmSettings = new JMenuItem("Settings");
+		mntmSettings.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Settings_32px.png")));
+		mntmSettings.setPreferredSize(new Dimension(250, 40));
+		mnProfile.add(mntmSettings);
+		
+		JMenuItem mntmLogout = new JMenuItem("Logout");
+		mntmLogout.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Logout_Rounded_Up_32px.png")));
+		mntmLogout.setPreferredSize(new Dimension(81, 40));
+		mnProfile.add(mntmLogout);
+		
+		JMenu mnAbout = new JMenu("About");
+		menuBar.add(mnAbout);
+		
+		JMenuItem mntmTeam = new JMenuItem("Team");
+		mntmTeam.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_People_32px.png")));
+		mntmTeam.setPreferredSize(new Dimension(250, 40));
+		mnAbout.add(mntmTeam);
+		
+		JMenuItem mntmApplication = new JMenuItem("Application");
+		mntmApplication.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Google_Code_32px.png")));
+		mntmApplication.setPreferredSize(new Dimension(105, 40));
+		mnAbout.add(mntmApplication);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(new LineBorder(new Color(0, 0, 128)));
@@ -68,7 +165,7 @@ public class MainWindow extends JFrame {
 		contentPane.setLayout(null);
 		
 		UserProfile us = new UserProfile();
-		us.setBounds(0, 142, 815, 383);
+		us.setBounds(0, 66, 809, 426);
 		us.setVisible(false);
 	
 		
@@ -77,7 +174,7 @@ public class MainWindow extends JFrame {
 		JPanel pl_home_options = new JPanel();
 		pl_home_options.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		pl_home_options.setBackground(Color.WHITE);
-		pl_home_options.setBounds(0, 142, 815, 383);
+		pl_home_options.setBounds(0, 66, 809, 440);
 		contentPane.add(pl_home_options);
 		pl_home_options.setLayout(null);
 		
@@ -222,11 +319,11 @@ public class MainWindow extends JFrame {
 		
 		JPanel pl_footer = new JPanel();
 		pl_footer.setBackground(new Color(0, 20, 20));
-		pl_footer.setBounds(0, 525, 815, 38);
+		pl_footer.setBounds(0, 503, 815, 60);
 		contentPane.add(pl_footer);
 		pl_footer.setLayout(null);
 		
-		JLabel lblCopyrightMasCompany = new JLabel("Copyright 2018 MASS Company Ltd. All Rights Reserved");
+		JLabel lblCopyrightMasCompany = new JLabel("Copyright 2018 MAS Company Ltd. All Rights Reserved");
 		lblCopyrightMasCompany.setForeground(SystemColor.inactiveCaptionBorder);
 		lblCopyrightMasCompany.setBounds(289, 14, 271, 13);
 		lblCopyrightMasCompany.setFont(new Font("Microsoft Sans Serif", Font.PLAIN, 10));
@@ -235,73 +332,47 @@ public class MainWindow extends JFrame {
 		JPanel main_menu = new JPanel();
 		main_menu.setBackground(new Color(255, 165, 0));
 		main_menu.setForeground(new Color(255, 255, 255));
-		main_menu.setBounds(0, 0, 815, 142);
+		main_menu.setBounds(0, 0, 815, 66);
 		contentPane.add(main_menu);
 		main_menu.setLayout(null);
 		
 		JLabel label_2 = new JLabel("");
 		label_2.setForeground(new Color(255, 255, 255));
-		label_2.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Stethoscope_96px.png")));
-		label_2.setBounds(26, 11, 152, 107);
+		label_2.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Stethoscope_64px_3.png")));
+		label_2.setBounds(10, 5, 69, 52);
 		main_menu.add(label_2);
 		
-		JLabel lblMas = new JLabel("MASS");
+		JLabel lblMas = new JLabel("MAS");
 		lblMas.setForeground(new Color(255, 255, 255));
 		lblMas.setFont(new Font("Malgun Gothic", Font.BOLD, 40));
-		lblMas.setBounds(115, 11, 123, 64);
+		lblMas.setBounds(68, 11, 110, 41);
 		main_menu.add(lblMas);
 		
 		JLabel lblMedicalManagementSystem = new JLabel("Medical Management System");
 		lblMedicalManagementSystem.setForeground(Color.WHITE);
 		lblMedicalManagementSystem.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
-		lblMedicalManagementSystem.setBounds(118, 54, 235, 32);
+		lblMedicalManagementSystem.setBounds(70, 41, 235, 22);
 		main_menu.add(lblMedicalManagementSystem);
 		
 		JPanel pl_btn_exit = new JPanel();
-		pl_btn_exit.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				new LoginView().setVisible(true);
-				CloseFrame();
-			}
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				pl_btn_exit.setBackground(new Color(50, 10, 10));
-				
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				pl_btn_exit.setBackground(new Color(90, 10, 10));
-				
-			}
-		});
-		pl_btn_exit.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		pl_btn_exit.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		pl_btn_exit.setBackground(new Color(90, 10, 10));
-		pl_btn_exit.setBounds(738, 0, 77, 142);
+		pl_btn_exit.setBounds(625, 0, 195, 66);
 		main_menu.add(pl_btn_exit);
 		pl_btn_exit.setLayout(null);
 		
-		JLabel label_1 = new JLabel("");
-		label_1.setBounds(21, 46, 40, 33);
-		pl_btn_exit.add(label_1);
-		label_1.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Exit_40px.png")));
 		
-		JLabel lblExit = new JLabel("Logout");
-		lblExit.setHorizontalAlignment(SwingConstants.CENTER);
-		lblExit.setFont(new Font("Arial", Font.PLAIN, 12));
-		lblExit.setForeground(new Color(255, 255, 255));
-		lblExit.setBounds(21, 84, 46, 14);
-		pl_btn_exit.add(lblExit);
-		
-		JPanel panel_5 = new JPanel();
-		panel_5.addMouseListener(new MouseAdapter() {
+		lblActiveUserEmail = new JLabel("John Doe");
+		lblActiveUserEmail.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblActiveUserEmail.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				panel_5.setBackground(new Color(255, 140, 0));
+				lblActiveUserEmail.setBackground(new Color(50, 10, 10));
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				panel_5.setBackground(new Color(255, 155, 0));
+				lblActiveUserEmail.setBackground(new Color(90, 10, 10));
+				
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -313,32 +384,33 @@ public class MainWindow extends JFrame {
 				us.lbl_acct_type.setText(activeUser.getUserType());
 				us.setUserID(activeUser.getUserID());
 				us.setVisible(true);
-				
 			}
 		});
-		panel_5.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panel_5.setBackground(new Color(255, 155, 0));
-		panel_5.setBounds(659, 0, 82, 142);
-		main_menu.add(panel_5);
-		panel_5.setLayout(null);
 		
-		JLabel label_3 = new JLabel("");
-		label_3.setBounds(21, 44, 40, 40);
-		panel_5.add(label_3);
-		label_3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		label_3.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Profile_40px.png")));
+		lblActiveUserEmail.setForeground(new Color(255, 255, 255));
+		lblActiveUserEmail.setBounds(10, 41, 88, 14);
+		pl_btn_exit.add(lblActiveUserEmail);
 		
-		JLabel lblMyProfile = new JLabel("My Profile");
-		lblMyProfile.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMyProfile.setForeground(new Color(255, 255, 255));
-		lblMyProfile.setFont(new Font("Arial", Font.PLAIN, 12));
-		lblMyProfile.setBounds(10, 84, 72, 14);
-		panel_5.add(lblMyProfile);
+		JLabel lblLogout = new JLabel("Logout");
+		lblLogout.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				new LoginView().setVisible(true);
+				CloseFrame();
+			}
+		});
+		lblLogout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblLogout.setHorizontalTextPosition(SwingConstants.LEADING);
+		lblLogout.setForeground(new Color(255, 255, 255));
+		lblLogout.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Logout_Rounded_Up_32px.png")));
+		lblLogout.setBounds(108, 32, 76, 32);
+		pl_btn_exit.add(lblLogout);
 		
-		
-		lblActiveUserEmail = new JLabel("John");
-		lblActiveUserEmail.setBounds(46, 117, 102, 14);
-		main_menu.add(lblActiveUserEmail);
+		JLabel label_1 = new JLabel("|");
+		label_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		label_1.setForeground(new Color(255, 255, 255));
+		label_1.setBounds(88, 41, 20, 14);
+		pl_btn_exit.add(label_1);
 		
 	}
 	
