@@ -17,13 +17,19 @@ import javax.swing.JTextArea;
 import java.awt.ComponentOrientation;
 
 public class UserProfile extends JPanel {
-	public JPasswordField pwdf_new_pwd;
-	public JPasswordField pwdf_retype_pwd;
+	public MPasswordField pwdf_new_pwd;
+	public MPasswordField pwdf_retype_pwd;
 	private final JSeparator separator_1 = new JSeparator();
 	public JButton btnNewButton;
 	public JLabel lblBackToMenu;
 	public JPanel error_msg;
 	private JLabel lbl_error_text;
+	public JLabel lbl_fname;
+	public JLabel lbl_lname;
+	public JLabel lbl_email;
+	public JLabel lbl_acct_type;
+	
+	private int userID;
 	/**
 	 * Create the panel.
 	 */
@@ -43,7 +49,8 @@ public class UserProfile extends JPanel {
 		pl_change_pwd.add(lblNewPassword);
 		lblNewPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
-		pwdf_new_pwd = new JPasswordField();
+		pwdf_new_pwd = new MPasswordField();
+		pwdf_new_pwd.setPlaceholder("Enter new password");
 		pwdf_new_pwd.setBounds(21, 50, 193, 39);
 		pl_change_pwd.add(pwdf_new_pwd);
 		
@@ -52,7 +59,8 @@ public class UserProfile extends JPanel {
 		pl_change_pwd.add(lblRetypePassword);
 		lblRetypePassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
-		pwdf_retype_pwd = new JPasswordField();
+		pwdf_retype_pwd = new MPasswordField();
+		pwdf_retype_pwd.setPlaceholder("Retype password");
 		pwdf_retype_pwd.setBounds(21, 125, 193, 39);
 		pl_change_pwd.add(pwdf_retype_pwd);
 		separator_1.setBounds(10, 11, 33, 290);
@@ -70,16 +78,16 @@ public class UserProfile extends JPanel {
 				
 			//Handle errors 
 				//check if inputs are the same
-				if(!np.equals(rp) && np.length() > 3) {
+				if(!np.equals(rp) && np.length() >= 8) {
 					error_msg.setBackground(new Color(255, 0, 0));
 					lbl_error_text.setText("Password does not match. Please try again");
 					error_msg.setVisible(true);
 				}
 				
 				
-				if(np.length() < 3) {
+				if(np.length() < 8) {
 					error_msg.setBackground(new Color(255, 0, 0));
-					lbl_error_text.setText("Password must be greater than three charaters long");
+					lbl_error_text.setText("Password must be greater than 8 charaters long");
 					error_msg.setVisible(true);
 				}
 				
@@ -89,6 +97,8 @@ public class UserProfile extends JPanel {
 					lbl_error_text.setText("Everything seems ok, UPDATING NOW...");
 					error_msg.setVisible(true);
 					
+					DatabaseConnection dc = new DatabaseConnection("mas");
+					dc.CRUD("UPDATE user set password='"+np+"' WHERE id='"+userID+"'");
 					//handle the changing of the password and then close the password box
 				}
 				
@@ -107,7 +117,7 @@ public class UserProfile extends JPanel {
 		pl_change_pwd.add(error_msg);
 		error_msg.setLayout(null);
 		
-		lbl_error_text = new JLabel("Paswword must be atleast eightcharater long");
+		lbl_error_text = new JLabel("Paswword must be atleast 8 characters long");
 		lbl_error_text.setForeground(Color.WHITE);
 		lbl_error_text.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lbl_error_text.setBounds(10, 11, 329, 20);
@@ -158,25 +168,25 @@ public class UserProfile extends JPanel {
 		separator.setBounds(63, 248, 338, 14);
 		add(separator);
 		
-		JLabel lblJohnDoe_1 = new JLabel("John\r\n");
-		lblJohnDoe_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblJohnDoe_1.setBounds(181, 93, 228, 24);
-		add(lblJohnDoe_1);
+		lbl_fname = new JLabel("John\r\n");
+		lbl_fname.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lbl_fname.setBounds(181, 93, 228, 24);
+		add(lbl_fname);
 		
-		JLabel lblDoe = new JLabel("Doe");
-		lblDoe.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblDoe.setBounds(181, 127, 228, 24);
-		add(lblDoe);
+		lbl_lname = new JLabel("Doe");
+		lbl_lname.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lbl_lname.setBounds(181, 127, 228, 24);
+		add(lbl_lname);
 		
-		JLabel lblJohndoeexamplecom = new JLabel("John.doe@example.com\r\n");
-		lblJohndoeexamplecom.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblJohndoeexamplecom.setBounds(181, 166, 228, 24);
-		add(lblJohndoeexamplecom);
+		lbl_email = new JLabel("John.doe@example.com\r\n");
+		lbl_email.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lbl_email.setBounds(181, 166, 228, 24);
+		add(lbl_email);
 		
-		JLabel lblAdminStaff = new JLabel("Admin Staff");
-		lblAdminStaff.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblAdminStaff.setBounds(181, 201, 228, 24);
-		add(lblAdminStaff);
+		lbl_acct_type = new JLabel("Admin Staff");
+		lbl_acct_type.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lbl_acct_type.setBounds(179, 207, 228, 24);
+		add(lbl_acct_type);
 		
 		lblBackToMenu = new JLabel("Back to Menu");
 		lblBackToMenu.addMouseListener(new MouseAdapter() {
@@ -201,6 +211,10 @@ public class UserProfile extends JPanel {
 		
 	}
 	
+	public void setUserID(int userID){
+		this.userID =userID;
+	}
+	
 	void resetPasswordControl(JPanel pl){
 		if(pl.isVisible()) {
 			pl.setVisible(false);
@@ -212,4 +226,15 @@ public class UserProfile extends JPanel {
 			pl.setVisible(true);
 		}
 	}
+	
+	private void sleeper() {
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 }

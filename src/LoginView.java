@@ -28,6 +28,9 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
+import java.awt.event.MouseMotionAdapter;
+import javax.swing.border.CompoundBorder;
+import java.awt.Insets;
 
 public class LoginView extends JFrame {
 
@@ -36,12 +39,14 @@ public class LoginView extends JFrame {
 	 */
 	private static final long serialVersionUID = 835459818027446290L;
 	private JPanel contentPane;
-	private JTextField txtfield_username;
-	private JPasswordField txtfield_password;
+	private MTextField txtfield_username;
+	private MPasswordField txtfield_password;
 	private JButton btnSubmit;
 	private JLabel lblNewLabel_3;
 	private boolean usernameState = false;
 	private boolean passwordState  =false;
+	private User activeUser = new User();
+	private DatabaseConnection dc = new DatabaseConnection("mas");
 	
 	/**
 	 * Launch the application.
@@ -64,6 +69,7 @@ public class LoginView extends JFrame {
 	 */
 	public LoginView() {
 		setUndecorated(true);
+		setBackground(new Color(255, 255, 255));
 		setLocationByPlatform(true);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,7 +77,7 @@ public class LoginView extends JFrame {
 		setLocationRelativeTo(null);
 		
 		contentPane = new JPanel();
-		contentPane.setBorder(new LineBorder(new Color(0, 0, 0), 10));
+		contentPane.setBorder(new LineBorder(new Color(0, 0, 255)));
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setForeground(Color.WHITE);
 		setContentPane(contentPane);
@@ -80,16 +86,17 @@ public class LoginView extends JFrame {
 		JPanel log_element = new JPanel();
 		log_element.setBorder(null);
 		log_element.setBackground(new Color(255, 255, 255));
-		log_element.setBounds(0, 0, 728, 383);
+		log_element.setBounds(1, 1, 725, 380);
 		contentPane.add(log_element);
 		log_element.setLayout(null);
 		
-		JLabel lblNewLabel_1 = new JLabel("Username");
+		JLabel lblNewLabel_1 = new JLabel("Email");
 		lblNewLabel_1.setBounds(77, 157, 67, 23);
 		log_element.add(lblNewLabel_1);
 		lblNewLabel_1.setForeground(Color.GRAY);
 		
-		txtfield_username = new JTextField();
+		txtfield_username = new MTextField();
+		txtfield_username.setPlaceholder("Email: example@email.com");
 		txtfield_username.setBounds(76, 179, 265, 28);
 		log_element.add(txtfield_username);
 		txtfield_username.setForeground(Color.BLACK);
@@ -100,10 +107,11 @@ public class LoginView extends JFrame {
 		log_element.add(lblNewLabel_2);
 		lblNewLabel_2.setForeground(Color.GRAY);
 		
-		txtfield_password = new JPasswordField();
+		txtfield_password = new MPasswordField();
+		txtfield_password.setPlaceholder("Password");
 		txtfield_password.setBounds(77, 238, 265, 28);
 		log_element.add(txtfield_password);
-		txtfield_password.setForeground(Color.BLACK);
+		
 		
 		JLabel lblNewLabel_4 = new JLabel("Don't have an account? ");
 		lblNewLabel_4.setBounds(66, 125, 146, 21);
@@ -145,8 +153,41 @@ public class LoginView extends JFrame {
 		lblNewLabel_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				CloseFrame();
-				new ChangePasswordView().setVisible(true);
+				int result = JOptionPane.showConfirmDialog(null, "Are you sure of this request?", "Change Password Request", JOptionPane.YES_NO_OPTION ,JOptionPane.QUESTION_MESSAGE);
+				
+				if(result == 0) {//yes
+					String email = JOptionPane.showInputDialog(null, "Please enter email address");
+										
+					if(email== null) {
+						JOptionPane.showMessageDialog(null, "No email was given, please try again", "Password Change Request", JOptionPane.WARNING_MESSAGE);
+						
+					}else {
+						if(Helper.isEmail(email)) {
+							try {
+								ResultSet rs = dc.executeStatementReturnResult("SELECT `id` FROM user WHERE email='"+email+"'");
+																						
+								if(rs.isBeforeFirst()) {
+									rs.first();
+									int userId = rs.getInt("id");
+									String query= "UPDATE user set status = '2' WHERE email='"+email+"'";
+									dc.CRUD(query);
+									JOptionPane.showMessageDialog(null, "Your request was approved, continue to change password", "Password Change Request", JOptionPane.INFORMATION_MESSAGE);
+									activeUser.setUserID(userId);
+									new ChangePasswordView().setUserSession(activeUser).setVisible(true);
+									CloseFrame();
+								}else {
+									JOptionPane.showMessageDialog(null, "This email is not registered with us", "Invalid Entry", JOptionPane.ERROR_MESSAGE);
+								}
+															
+							}catch(Exception e) {
+								e.printStackTrace();
+							}
+						}else {
+							JOptionPane.showMessageDialog(null, "This is an invalid email address", "Invalid Entry", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					
+				}
 			}
 		});
 		lblNewLabel_3.setForeground(Color.DARK_GRAY);
@@ -164,12 +205,24 @@ public class LoginView extends JFrame {
 		});
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(isUserAuthenticated()) {
-//					JOptionPane.showMessageDialog(null, "Login was Successful");
+				if(isUserAuthenticated()) {		
+					if(activeUser.getStatus() == 0) {
+						//At this user is login but password is inactive
+						JOptionPane.showMessageDialog(null, "This account is inactive, please contact your Administrator");
+					}
+					if(activeUser.getStatus() == 1) {
+						//At this point creditentail ok and account is set to view
+						new MainWindow().setUserSession(activeUser).setVisible(true);
+						CloseFrame();	
+					}
+					if(activeUser.getStatus() == 2) {
+						//At this point password request is made.
+						JOptionPane.showMessageDialog(null,"A change password was requested for this account","Password Change",JOptionPane.INFORMATION_MESSAGE);
+						new ChangePasswordView().setUserSession(activeUser).setVisible(true);
+						CloseFrame();
+					}
 					
-					new MainWindow().setVisible(true);
-					CloseFrame();
-					
+									
 				}else {
 					JOptionPane.showMessageDialog(null, "Unable to Login");
 				}
@@ -239,28 +292,29 @@ public class LoginView extends JFrame {
 		lblCordelReid.setBounds(381, 195, 73, 14);
 		toRight.add(lblCordelReid);
 		
-		JLabel lblX = new JLabel("");
-		lblX.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
-			}
-		});
-		lblX.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblX.setIcon(new ImageIcon(LoginView.class.getResource("/icons/icons8_Multiply_32px.png")));
-		lblX.setForeground(new Color(255, 255, 255));
-		lblX.setFont(new Font("Tahoma", Font.BOLD, 26));
-		lblX.setBounds(420, 0, 32, 37);
-		toRight.add(lblX);
+		CloseMinimize minimizeBar = new CloseMinimize(this);
+		minimizeBar.setButton(CloseMinimizeIcon.Minimize);
+		minimizeBar.setBounds(387, 0, 32, 32);
+		toRight.add(minimizeBar);
+		
+		CloseMinimize closeBar = new CloseMinimize(this);
+		closeBar.setButton(CloseMinimizeIcon.Close);
+		closeBar.setCloseOption(JFrame.EXIT_ON_CLOSE);
+		closeBar.setBounds(422, 0, 32, 32);
+		toRight.add(closeBar);
+		
+				
+		WindowDragger frameDrag = new WindowDragger(this);
+		frameDrag.setBounds(0, 0, 728, 36);
+		log_element.add(frameDrag);
 	}
-	
+
 	public void CloseFrame(){
 	    super.dispose();
 	}
 	
 	private void activateSubmit() {
-		// TODO Auto-generated method stub
-		if(usernameState && passwordState) {
+			if(usernameState && passwordState) {
 			btnSubmit.setEnabled(true);
 		}else{
 			btnSubmit.setEnabled(false);
@@ -272,19 +326,19 @@ public class LoginView extends JFrame {
 		String username = this.txtfield_username.getText();
 		String password =  this.txtfield_password.getText(); 
 		
-		//once we are here the user have satisfied the login criteria
-		
-		//We can now connect to database and get the information for the data that was provided and return a 
-		//boolean result
+		//check if email is email
+		if(!Helper.isEmail(username)) {
+			JOptionPane.showMessageDialog(null, "Invalid Email Address", "Invaid Email" , JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 		return checkDatabaseForUser(username, password);
 	}
 
 	private Boolean checkDatabaseForUser(String username, String password) {
-		// TODO Auto-generated method stub
 		try {
-			DatabaseConnection dc = new DatabaseConnection("mas");
+			
 			//Perform query and capture the result from the database
-			ResultSet resultSet = dc.executeStatementReturnResult("SELECT * FROM user WHERE `username` =  '"+username+"'");
+			ResultSet resultSet = dc.executeStatementReturnResult("SELECT * FROM user WHERE `email` =  '"+username+"'");
 			
 			//check to see if database return a result
 			if(!resultSet.isBeforeFirst()) {
@@ -294,6 +348,16 @@ public class LoginView extends JFrame {
 			{
 				resultSet.first();
 				if(password.equals(resultSet.getString("password"))) {
+					//setup information user to use throughout the life of the program
+					activeUser = new User(
+							resultSet.getInt("id"),
+							resultSet.getString("first_name"),
+							resultSet.getString("last_name"),
+							resultSet.getString("email"),
+							null,
+							resultSet.getString("usertype"),
+							resultSet.getInt("status")
+							);
 					return true;
 				}
 				else

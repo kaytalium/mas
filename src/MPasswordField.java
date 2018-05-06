@@ -9,8 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import javax.swing.JPasswordField;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -19,9 +18,10 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 @SuppressWarnings({ "serial", "unused" })
-public class MTextField extends JTextField implements KeyListener, ActionListener, FocusListener, CaretListener  {
+public class MPasswordField extends JPasswordField implements KeyListener, ActionListener, FocusListener, CaretListener  {
 	
-	private String placeholder; // = "put some here";
+	private String placeholder; //"put some here";
+	private char defaultChar;
 	
 	
 	
@@ -34,9 +34,10 @@ public class MTextField extends JTextField implements KeyListener, ActionListene
 		this.placeholder = placeholder;
 	}
 
-	public MTextField() {
+	public MPasswordField() {
 		// TODO Auto-generated constructor stub
 		super();
+		setForeground(Color.gray);
 		Border lineBorder = new LineBorder(Color.gray,1,true);
 		Border empty = new EmptyBorder(0, 5, 0, 5);
 		setBorder(lineBorder);
@@ -45,8 +46,11 @@ public class MTextField extends JTextField implements KeyListener, ActionListene
 		addFocusListener(this);
 		addCaretListener(this);
 		addKeyListener(this);
-		setCaretPosition(0);
-		setForeground(Color.GRAY);
+		defaultChar = getEchoChar();
+		setEchoChar((char) 0);
+		
+		
+		
 	}
 
 	@Override
@@ -67,6 +71,7 @@ public class MTextField extends JTextField implements KeyListener, ActionListene
 		if(placeholder.toLowerCase().equals(this.getText().toLowerCase())) {
 			this.setText("");
 			this.setForeground(Color.black);
+			this.setEchoChar(defaultChar);
 		}
 	}
 
@@ -76,6 +81,7 @@ public class MTextField extends JTextField implements KeyListener, ActionListene
 		if(this.getText().isEmpty()) {
 			this.setText(placeholder);
 			this.setForeground(Color.GRAY);
+			this.setEchoChar((char) 0);
 		}
 		
 	}

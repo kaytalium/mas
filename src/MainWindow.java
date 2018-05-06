@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 public class MainWindow extends JFrame {
 
@@ -32,6 +33,8 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = -3443174621881190718L;
 	private JPanel contentPane;
 	private JPanel pl_btn_pl;
+	private User activeUser;
+	JLabel lblActiveUserEmail;
 
 	/**
 	 * Launch the application.
@@ -60,7 +63,7 @@ public class MainWindow extends JFrame {
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 255, 255));
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBorder(new LineBorder(new Color(0, 0, 128)));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
@@ -258,7 +261,8 @@ public class MainWindow extends JFrame {
 		pl_btn_exit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				System.exit(0);
+				new LoginView().setVisible(true);
+				CloseFrame();
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -282,10 +286,11 @@ public class MainWindow extends JFrame {
 		pl_btn_exit.add(label_1);
 		label_1.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Exit_40px.png")));
 		
-		JLabel lblExit = new JLabel("Exit");
-		lblExit.setFont(new Font("Arial", Font.PLAIN, 10));
+		JLabel lblExit = new JLabel("Logout");
+		lblExit.setHorizontalAlignment(SwingConstants.CENTER);
+		lblExit.setFont(new Font("Arial", Font.PLAIN, 12));
 		lblExit.setForeground(new Color(255, 255, 255));
-		lblExit.setBounds(31, 79, 46, 14);
+		lblExit.setBounds(21, 84, 46, 14);
 		pl_btn_exit.add(lblExit);
 		
 		JPanel panel_5 = new JPanel();
@@ -301,6 +306,12 @@ public class MainWindow extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				pl_home_options.setVisible(false);
+//				setup the information
+				us.lbl_fname.setText(activeUser.getFirstname());
+				us.lbl_lname.setText(activeUser.getLastname());
+				us.lbl_email.setText(activeUser.getEmail());
+				us.lbl_acct_type.setText(activeUser.getUserType());
+				us.setUserID(activeUser.getUserID());
 				us.setVisible(true);
 				
 			}
@@ -318,10 +329,17 @@ public class MainWindow extends JFrame {
 		label_3.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/icons8_Profile_40px.png")));
 		
 		JLabel lblMyProfile = new JLabel("My Profile");
+		lblMyProfile.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMyProfile.setForeground(new Color(255, 255, 255));
-		lblMyProfile.setFont(new Font("Arial", Font.PLAIN, 10));
-		lblMyProfile.setBounds(21, 78, 72, 14);
+		lblMyProfile.setFont(new Font("Arial", Font.PLAIN, 12));
+		lblMyProfile.setBounds(10, 84, 72, 14);
 		panel_5.add(lblMyProfile);
+		
+		
+		lblActiveUserEmail = new JLabel("John");
+		lblActiveUserEmail.setBounds(46, 117, 102, 14);
+		main_menu.add(lblActiveUserEmail);
+		
 	}
 	
 	void mouseEnter(JPanel btn){
@@ -330,5 +348,17 @@ public class MainWindow extends JFrame {
 	
 	void mouseLeave(JPanel btn) {
 		btn.setBackground(new Color(51,51,51));
+	}
+	
+	public void CloseFrame(){
+	    super.dispose();
+	}
+	
+	public MainWindow setUserSession(User user) {
+//		store the logged in user
+		activeUser = user;
+		//
+		lblActiveUserEmail.setText(user.getFirstname() +" "+ user.getLastname());
+		return this;
 	}
 }

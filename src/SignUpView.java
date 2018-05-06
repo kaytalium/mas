@@ -1,5 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.Choice;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -10,12 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -24,23 +16,21 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.PreparedStatement;
 import javax.swing.ImageIcon;
 import java.awt.Cursor;
 import javax.swing.border.LineBorder;
 import java.awt.Component;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 
 public class SignUpView extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 893523976981987064L;
 
 	private JPanel contentPane;
 
@@ -53,12 +43,11 @@ public class SignUpView extends JFrame {
 	private JLabel lblNewLabel_3;
 	private JLabel lblNewLabel_4;
 	private JLabel lblNewLabel_5;
-	private JLabel lblClose;
 	private JPanel panel;
 	private JPanel panel_1;
 	private JLabel lblSignUp;
-	private MTextField txtfield_password;
-	private MTextField txtfield_rtype_password;
+	private MPasswordField txtfield_password;
+	private MPasswordField txtfield_rtype_password;
 	private JPanel panel_3;
 	private JLabel lblNewLabel_6;
 	private JLabel label;
@@ -66,9 +55,10 @@ public class SignUpView extends JFrame {
 	private JLabel label_2;
 	private JLabel label_3;
 	private JLabel label_4;
-	private JComboBox option_userType;
+	private JComboBox<?> option_userType;
 	
-	private String[] userData;
+	private String[] userData = new String[5];
+	private JLabel frameDragger;
 	
 	/**
 	 * Launch the application.
@@ -97,28 +87,33 @@ public class SignUpView extends JFrame {
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
-		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		contentPane.setBorder(new LineBorder(new Color(0, 0, 255)));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 165, 0));
-		panel_1.setBounds(0, 0, 728, 28);
+		panel_1.setBounds(1, 1, 726, 32);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
-		lblClose = new JLabel("");
-		lblClose.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				CloseFrame();
-				new LoginView().setVisible(true);				  
-			}
-		});
-		lblClose.setBounds(686, 0, 32, 28);
-		panel_1.add(lblClose);
-		lblClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblClose.setIcon(new ImageIcon(SignUpView.class.getResource("/icons/icons8_Multiply_32px.png")));
+		CloseMinimize minimizeBtn = new CloseMinimize(this);
+		minimizeBtn.setButton(CloseMinimizeIcon.Minimize);
+		minimizeBtn.setBounds(660, 0, 32, 32);
+		panel_1.add(minimizeBtn);
+		
+		CloseMinimize closeBtn = new CloseMinimize(this);
+		closeBtn.setButton(CloseMinimizeIcon.Close);
+		closeBtn.setCloseOption(JFrame.DISPOSE_ON_CLOSE);
+		closeBtn.setNavigateToView(new LoginView());
+		closeBtn.setBounds(693, 0, 32, 32);
+		panel_1.add(closeBtn);
+		
+		
+		
+		frameDragger = new WindowDragger(this);
+		frameDragger.setBounds(1, 1, 727, 32);
+		panel_1.add(frameDragger);
 		
 		panel = new JPanel();
 		panel.addMouseListener(new MouseAdapter() {
@@ -128,7 +123,7 @@ public class SignUpView extends JFrame {
 			}
 		});
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(1, 29, 403, 359);
+		panel.setBounds(1, 29, 403, 352);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -156,9 +151,13 @@ public class SignUpView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if(isValidate()) {
 					//store the information to the database
-					String query = "INSERT INTO user(`email`,`firstname`,`lastname`,`password`,`userType`) VALUES(?,?,?,?,?)";
-					DatabaseConnection dc = new DatabaseConnection();
-//					ResultSet rs = dc.CRUD(query, userData);
+					System.out.println("Email: "+userData[0]);
+					String query = "INSERT INTO user(`email`,`first_name`,`last_name`,`password`,`usertype`) VALUES('"+userData[0]+"','"+userData[1]+"','"+userData[2]+"','"+userData[3]+"','"+userData[4]+"')";
+					DatabaseConnection dc = new DatabaseConnection("mas");
+					dc.CRUD(query);
+					JOptionPane.showMessageDialog(null, "You're account was created sucessfully");
+					new LoginView().setVisible(true);
+					CloseFrame();
 				}
 			}
 		});
@@ -199,6 +198,9 @@ public class SignUpView extends JFrame {
 		lblNewLabel_5.setForeground(Color.GRAY);
 		
 		option_userType = new JComboBox();
+		option_userType.setOpaque(false);
+		option_userType.setBackground(new Color(255, 255, 255));
+		option_userType.setBorder(new CompoundBorder(new LineBorder(new Color(128, 128, 128)), new EmptyBorder(0, 5, 0, 0)));
 		option_userType.setBounds(217, 92, 176, 35);
 		panel.add(option_userType);
 		option_userType.setModel(new DefaultComboBoxModel(new String[] {"-- Select UserType --", "Admin Assistant", "Medical Staff"}));
@@ -209,13 +211,13 @@ public class SignUpView extends JFrame {
 		lblSignUp.setBounds(21, 11, 176, 50);
 		panel.add(lblSignUp);
 		
-		txtfield_password = new MTextField();
+		txtfield_password = new MPasswordField();
 		txtfield_password.setPlaceholder("Password");
 		txtfield_password.setColumns(10);
 		txtfield_password.setBounds(21, 222, 176, 35);
 		panel.add(txtfield_password);
 		
-		txtfield_rtype_password = new MTextField();
+		txtfield_rtype_password = new MPasswordField();
 		txtfield_rtype_password.setPlaceholder("Re-type Password");
 		txtfield_rtype_password.setColumns(10);
 		txtfield_rtype_password.setBounds(217, 222, 176, 35);
@@ -272,16 +274,15 @@ public class SignUpView extends JFrame {
 		panel_3.setBackground(Color.WHITE);
 		panel_3.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		panel_3.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		panel_3.setBounds(403, 24, 325, 359);
+		panel_3.setBounds(403, 29, 323, 352);
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
 		
 
 		try {
-			BufferedImage myPicture = ImageIO.read(new File("image/music.png"));
+			BufferedImage myPicture = ImageIO.read(new File("image/music_signup.jpg"));
 			lblNewLabel_6 = new JLabel(new ImageIcon(myPicture));
-			lblNewLabel_6.setBounds(0, 0, 325, 359);
-//			lblNewLabel_6.setIcon(new ImageIcon(SignUpView.class.getResource("/icons/icons8_Stethoscope_100px_1.png")));
+			lblNewLabel_6.setBounds(0, 0, 325, 348);
 			panel_3.add(lblNewLabel_6);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
