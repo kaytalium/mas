@@ -37,20 +37,16 @@ public class MTextField extends JTextField implements KeyListener, ActionListene
 	public MTextField() {
 		// TODO Auto-generated constructor stub
 		super();
-		
-//		UIManager.put("this.marign", new Insets(5, 5, 5, 5));
 		Border lineBorder = new LineBorder(Color.gray,1,true);
-		Border empty = new EmptyBorder(0, 1, 0, 0);
+		Border empty = new EmptyBorder(0, 5, 0, 5);
 		setBorder(lineBorder);
-		
 		Border border = new CompoundBorder(lineBorder, empty);
-		
 		setBorder(border);
-		setMargin(new Insets(5,5,5,5));
-		
 		addFocusListener(this);
 		addCaretListener(this);
 		addKeyListener(this);
+		setCaretPosition(0);
+		setForeground(Color.GRAY);
 	}
 
 	@Override
