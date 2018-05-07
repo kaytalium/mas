@@ -1,0 +1,276 @@
+@charset "ISO-8859-1";
+body
+{
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif; 
+}
+
+html
+{
+	background: url('../img/background3.jpg') no-repeat;
+	background-size: cover;
+	top: 500px;
+	opacity: .85;
+}
+
+
+.loginbox
+{
+	width: 450px;
+	height: 410px;
+	background: #000;
+	color: #fff;
+	top: 50%;
+	left: 50%;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	box-sizing: border-box;
+	padding: 70px 30px;
+}
+.avatar
+{
+	width:100px;
+	height:100px;
+	border-radius: 50%;
+	position: absolute;
+	top: -50px;
+	left: calc(50% - 50px);
+}
+h2{
+margin: 0;
+padding: 0 0 20px;
+text-align: center;
+font-size: 22px;	
+}
+
+
+.loginbox label, p
+{
+	margin: 0;
+	padding: 0 20px;
+}
+
+.loginbox label
+{
+	font-weight: bold:
+}
+
+.loginbox p
+{
+	width: 100%;
+}
+.loginbox input
+{
+	width: 90%;
+	margin-bottom: 30px;
+	
+}
+
+.loginbox input[type="text"], input[type="password"], input[type="email"]
+{
+	border: none;
+	border-bottom:1px solid #fff;
+	background:transparent;
+	outline: none;
+	height: 40px;
+	color: #fff;
+	size-font: 16px;
+	
+	
+}
+.loginbox input[type="submit"]
+{
+	border:none;
+	outline: none;
+	height: 40px;
+	background: #f47c2c;
+	color: #fff;
+	size-font:18px;
+	border-radius: 20px;
+
+}
+.loginbox input[type= "submit"]:hover
+{
+	cursor:pointer;
+	background: #ffc107;
+	color: #000;
+	
+}
+.loginbox a
+{
+	text-decoration: none;
+	font-size: 16px;
+	line-height: 20px;
+	color: darkgrey;
+	
+}
+.loginbox a:hover
+{
+	color: #ffc107;
+	
+}
+.memlink
+{
+	text-align:center;
+	padding: 0;
+}
+
+.footer{
+	position: fixed;
+	bottom:0;
+	width:100%;
+	height: 30px;
+	
+}
+
+.footer p{
+	float:left;
+	width:30%;
+	color:#ffffff;
+	font-size: 18px;
+}
+
+.company_name{
+	padding-left:50px;
+}
+
+strong{
+	color:#f47c2c;
+}
+/**button color: #f47c2c*/
+
+/*Styling of the Registration form*/
+.Regbox
+{
+	width: 450px;
+	height: 615px;
+	background: #000;
+	color: #fff;
+	top: 50%;
+	left: 50%;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	box-sizing: border-box;
+	padding: 70px 30px;
+	
+}
+h1
+{
+margin: 0;
+padding: 0 0 20px;
+text-align: center;
+font-size: 22px;	
+}
+
+.Regbox label, p
+{
+	margin: 0;
+	padding: 0 20px;
+}
+
+.Regbox label
+{
+	font-weight: bold:
+}
+
+.Regbox p
+{
+	width: 100%;
+}
+.Regbox input
+{
+	width: 90%;
+	margin-bottom: 20px;
+	
+}
+.Regbox input[type="checkbox"]
+{
+	width: 25px;
+}
+
+.Regbox input[type="text"], input[type="password"], 
+input[type="email"],input[type="number"]
+{
+	border: none;
+	border-bottom:1px solid #fff;
+	background:transparent;
+	outline: none;
+	height: 40px;
+	color: #fff;
+	size-font: 16px;
+	
+	
+}
+.Regbox input[type="number"]
+{
+	width: 50%;
+}
+
+.Regbox input[type="submit"]
+{
+	border:none;
+	outline: none;
+	height: 40px;
+	background: #f47c2c;
+	color: #fff;
+	size-font:18px;
+	border-radius: 20px;
+
+}
+.Regbox input[type= "submit"]:hover
+{
+	cursor:pointer;
+	background: #ffc107;
+	color: #000;
+	
+}
+.Regbox a
+{
+	text-decoration: none;
+	font-size: 12px;
+	line-height: 20px;
+	color: darkgrey;
+	
+}
+.Regbox a:hover
+{
+	color: #ffc107;
+	
+}
+
+/*Confirmation Page Styling*/
+.outer
+{  /* border:1px solid red;*/
+	height:100%;
+	width:100%;
+}
+.header
+{
+	/*border: 1px solid green;*/
+}
+
+.inner
+{
+	/*border :1px solid red;*/
+}
+.container
+{
+	border: 1px solid blue;
+	width:90%;
+	height:60%;
+}
+.left
+{
+	border: 1px solid red;
+	float:left;
+	height:600px;
+	width:300px
+}
+.right
+{
+	border: 1px solid blue;
+	float: left;
+	width:600px;
+	height :600px;
+}

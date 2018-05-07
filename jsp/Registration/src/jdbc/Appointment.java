@@ -8,6 +8,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -47,35 +49,57 @@ public class Appointment extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 		
-		/*HttpSession session = request.getSession();
-		String str = session.getAttribute("fname").toString();
+		HttpSession session = request.getSession();
+		
+		Boolean isAuth = (Boolean) session.getAttribute("isAuth");
+		
+		if(!isAuth) {
+			RequestDispatcher ard = request.getRequestDispatcher("login.jsp");
+			ard.forward(request, response);
+		}
+			
+		String str = session.getAttribute("sess_fname").toString();
 		PrintWriter out = response.getWriter();
-		out.println("Welcome" +str);*/
+		out.println("Welcome" +str);
 		
 		try {
+			String email = (String) session.getAttribute("sess_email"); 
 			String patientID = request.getParameter("p_id").toString();
 			String firstName = request.getParameter("Fname");
 			String lastName = request.getParameter("Lname");
-			Date date = request.getParameter("adate");
+			String serviceValue = request.getParameter("services");
+			String doctorValue = request.getParameter("doctors");
+			String date = request.getParameter("adate");
 			String remark = request.getParameter("remark");
 			
-			PrintWriter out2 = response.getWriter();
-			out2.println(patientID);
+			SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date adate = sd.parse(date);
+			java.sql.Date dbdate= new java.sql.Date(adate.getTime());
 			
-			String sql = "insert into appointment(`PatientID`, `FirstName`, `LastName`, `Date`, `Remark`) values(?,?,?,?,?)";
+			String[] services = serviceValue.split(" - ");
+			String[] doctors = doctorValue.split(" - ");
+			
+			
+			
+			String sql = "INSERT INTO appointment(`PatientID`, `FirstName`, `LastName`,`ServiceID`,`DoctorsID`,`Date`,`Remark`) VALUES(?,?,?,?,?,?,?)";
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspmas","root", "root");
 			PreparedStatement ps = conn.prepareStatement(sql);
 			
+						
 			ps.setString(1, patientID);
 			ps.setString(2, firstName);
 			ps.setString(3, lastName);
-			ps.setString(4, date);
-			ps.setString(5, remark);
+			ps.setInt(4, Integer.parseInt(services[0]));
+			ps.setInt(5, Integer.parseInt(doctors[0]));
+			ps.setDate(6, dbdate);
+			ps.setString(7, remark);
 			ps.executeUpdate();
 			
-			PrintWriter out = response.getWriter();
-			out.println("You have successfully created your appointment");
+			PrintWriter out2 = response.getWriter();
+			out2.println("You have successfully created your appointment");
+			
+			response.sendRedirect("confirmation.jsp");
 			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -83,9 +107,11 @@ public class Appointment extends HttpServlet {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+					
 		
 	}
 

@@ -45,17 +45,10 @@ public class Registration extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
-		
-		String firstName = null;
-		String lastName = null;
-
-		HttpSession session = request.getSession();
-		session.setAttribute("sessfname",firstName); 
-		session.setAttribute("sesslname",lastName); 
-		
+						
 		try {
-			 firstName = request.getParameter("fname");
-			 lastName = request.getParameter("lname");
+			 String firstName = request.getParameter("fname");
+			 String lastName = request.getParameter("lname");
 			String email = request.getParameter("usname");
 			String password = request.getParameter("pword");
 			

@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class Login
@@ -45,17 +46,21 @@ public class Login extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 		
+//		HttpSession session = request.getSession();
+//		String str = session.getAttribute("fname").toString();
+		PrintWriter out = response.getWriter();
+//		out.println("Welcome" +str);
 		
 		try {
 			String email = request.getParameter("uname");
 			String password = request.getParameter("paword");
-			String databaseEmail = null;
-			String databasePword = null;
+			String firstname = null;
+			String lastname = null;
 			
-			String newquery = "SELECT * FROM registration where Username= ? and Password =?";
+			String passwordquery = "SELECT * FROM registration where Username= ? and Password =?";
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspmas", "root","root");
-			PreparedStatement pstmt = conn.prepareStatement(newquery);
+			PreparedStatement pstmt = conn.prepareStatement(passwordquery);
 			
 			pstmt.setString(1, email);
 			pstmt.setString(2, password);
@@ -65,17 +70,20 @@ public class Login extends HttpServlet {
 						
 			if(rs.next())
 			{
-				databaseEmail = rs.getString("Username");
-				databasePword = rs.getString("Password");
+				 firstname = rs.getString("firstName");
+				 lastname = rs.getString("lastName");
+				 
+				 HttpSession session = request.getSession();
+				 session.setAttribute("sess_fname",firstname); 
+				 session.setAttribute("sess_lname",lastname); 
+				 session.setAttribute("isAuth", true);//This is to be used in all other pages 
 
+				 
+				 loginout.println("You are logged in");
+				 RequestDispatcher rd = request.getRequestDispatcher("appointment.jsp");
+				 rd.forward(request, response);
 				
-			}
-			if(email.equals(databaseEmail) && password.equals(databasePword))
-			{
-									
-				loginout.println("You are logged in");
-				RequestDispatcher rd = request.getRequestDispatcher("appointment.jsp");
-				rd.forward(request, response);
+				
 			}
 			else
 			{
@@ -83,7 +91,7 @@ public class Login extends HttpServlet {
 				//RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
 				//rd.include(request, response);
 			}
-			} 
+		} 
 		catch (ClassNotFoundException e) {
 			
 			e.printStackTrace();

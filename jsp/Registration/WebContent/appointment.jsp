@@ -10,14 +10,20 @@
 <body>
 <h1>Create Appointment</h1>
 <br><br><br>
+<%
+String Fname=(String)session.getAttribute("sess_fname"); 
+String Lname=(String)session.getAttribute("sess_lname"); 
+out.print("Welcome: " +" "+ Fname + " " + Lname); 
+
+%>
 
 <br><br>
 <form action="Appointment" method="post">
 <label>Patient ID</label> <input type="number" name="p_id" style= "width: 250px"><br><br>
 <label>First Name</label> <input type="text" name="Fname" style= "width:250px"><br><br>
 <label>Last Name</label> <input type="text" name="Lname"  style="width:250px"><br><br>
-<!--  <label>Services</label>
-<select class = "form-control" style= "width: 250px">
+ <label>Services</label>
+<select class = "form-control" name="services" style= "width: 250px">
 <option value ="-1">Select a Service</option>
 <%
 Connection conn = null;
@@ -33,7 +39,7 @@ try {
 	while(rs.next())
 	{ 
 		%>
-		<option value="<%=rs.getInt("service_id")%>"><%=rs.getString("service")%></option>
+		<option><%=rs.getInt("service_id")%> - <%=rs.getString("service")%></option>
 		<%
 	}
 	}
@@ -45,11 +51,10 @@ try {
 	}
 %>
 
-</select> -->
-
+</select>
 <br><br>
-<!--<label>Doctors</label> 
-<select class = "form-control" style= "width: 250px">
+<label>Doctors</label> 
+<select class = "form-control" name="doctors" style= "width: 250px">
 <option value ="-1">Select a Doctor</option>
 <%
 try {
@@ -63,7 +68,7 @@ try {
 	while(rs.next())
 	{ 
 		%>
-		<option value="<%=rs.getInt("ID")%>"><%=rs.getString("Name")%></option>
+		<option><%=rs.getInt("ID")%> - <%=rs.getString("Name")%></option>
 		<%
 	}
 	}
@@ -75,7 +80,7 @@ try {
 	}
 %>
 
-</select>  -->
+</select> 
 <br><br>
 <label>Date</label> <input type="date" name="adate" style="width:250px">
 <br><br>
