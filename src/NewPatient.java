@@ -67,6 +67,8 @@ public class NewPatient extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		new ApplicationMenu(this);
+		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(255, 165, 0));
 		panel.setBounds(0, 0, 275, 616);
