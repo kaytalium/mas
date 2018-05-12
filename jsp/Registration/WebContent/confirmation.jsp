@@ -5,21 +5,18 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link href = "css/style.css" rel="stylesheet" type="text/css">
+<link href = "css/confirmstyle.css" rel="stylesheet" type="text/css">
 <title>Appointment Confirmation</title>
 </head>
 <body>
-<div class="outer">
+<div class="title"><h2>Manage Appointment</h2></div>
 
+<div class="container">
 	<form method="post" action="Confirmation">
-	<div class="header"><h2>Manage Appointment</h2></div>
 	
-	<div class="inner">
 	
-	</div>
-	
-	<div class="container">
 		<div class="left">
+		<h3>Personal Details</h3>
 		<%
 		Connection conn = null;
 		Statement stmt = null;
@@ -30,14 +27,14 @@
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspmas", "root", "root");
 			stmt = conn.createStatement();
 			
-			String query = "SELECT PatientID, FirstName LastName FROM appointment";
+			String query = "SELECT a.PatientID, p.first_name, p.last_name FROM appointment a, person p WHERE a.ID='2' AND a.patientID=p.id";
 			ResultSet rs = stmt.executeQuery(query);
 						 
 			while(rs.next())
 			{
 				%>
-				<label>Patient ID:<%=rs.getString("PatientID")%></label><br><br>
-				<label>Name:<%=rs.getString("FirstName")%><%=rs.getString("LastName")%></label>
+				<label>Patient ID: <%=rs.getString("PatientID")%></label><br><br>
+				<label>Name: <%=rs.getString("first_name")%></label> <label><%=rs.getString("last_name")%></label>
 				<%
 			}
 		}catch(Exception ex)
@@ -49,6 +46,7 @@
 		</div>
 	
 		<div class="right">
+		<div class="formBox">
 		<h3>Appointment Details</h3>
 		<%
 		Connection connect = null;
@@ -60,15 +58,17 @@
 			connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/jspmas", "root", "root");
 			stamt = connect.createStatement();
 			
-			String query = "SELECT Date, Remark FROM appointment";
+			String query = "SELECT a.Date, a.Remark, s.service, d.Name FROM appointment a, services s, doctors d WHERE ID='2'AND a.ServiceID=s.service_id AND a.DoctorsID=d.DoctorID";
 			ResultSet rs = stmt.executeQuery(query);
 						 
 			while(rs.next())
 			{
 				%>
-				<label>When:<%=rs.getString("Date")%></label><br><br>
+				<label>Services: <%=rs.getString("service")%></label>
+				<label>Doctor: <%=rs.getString("Name")%></label>
+				<label>When: <%=rs.getString("Date")%></label><br><br>
 								
-				 <label>Remark:<%=rs.getString("Remark")%></label><br><br>
+				 <label>Remark: <%=rs.getString("Remark")%></label><br><br>
 				<%
 			}
 			
@@ -78,13 +78,11 @@
 			out.println("Error" + e.getMessage());
 		}
 		%>
-			
-			
-			
+				
+		</div>
 		</div>
 	</div>	
 	<div class="lower"></div>
 	</form>
-</div>
-</body>
+	</body>
 </html>

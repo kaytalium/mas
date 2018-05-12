@@ -1,0 +1,92 @@
+@charset "ISO-8859-1";
+body
+{
+	margin:0;
+	padding:0;
+	text-align: center;
+	/*background: linear-gradient(rgba(0,0,150,0.5), rgba(0,0,50, 0.5));*/
+	font-family: sans-serif;
+	
+}
+
+.appointment-title
+{
+	margin-top: 100px;
+	margin-bottom: 50%;
+	color: #fff;
+	text-transform: uppercase;
+	transition: all 4s ease-in-out;
+	border: 1px solid white;
+	padding: 10px;
+}
+.appointment-title h1
+{
+	font-size: 32px;
+	line-height: 10px;
+	text-align: center;
+}
+h1
+{
+margin: 0;
+padding: 0 0 15px;
+text-align: center;
+font-size: 22px;	
+}
+form
+{
+	margin-top: 50px;
+	transition: all 4s ease-in-out;
+	
+}
+.form-control
+{
+	width: 600px;
+	background:transparent;
+	border: none;
+	outline: none;
+	border-bottom: 1px solid gray;
+	/*color:#fff;*/
+	font-size: 18px;
+	margin-bottom:20px;
+	
+	}
+.appointment-form
+{
+	width: 750px;
+	height: 820px;
+	background: #005;
+	color: #fff;
+	top: 65%;
+	left: 50%;
+	position: absolute;
+	transform: translate(-40%, -40%);
+	box-sizing: border-box;
+	padding: 10px 30px;
+}
+input
+{
+	height: 45px;
+}
+form .submit
+{
+	background: #ff5722;
+	border-color: transparent;
+	color: #fff;
+	font-size: 20px;
+	font-weight: bold;
+	letter-spacing: 2px;
+	height: 30px;
+	margin-top: 20px;
+	
+}
+.appointment-form input
+{
+	width: 100%;
+	margin-bottom: 30px;
+	
+}
+.appointment-form label
+{
+	margin: 0;
+	padding: 0 20px;
+}

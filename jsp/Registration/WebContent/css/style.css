@@ -53,7 +53,7 @@ font-size: 22px;
 
 .loginbox label
 {
-	font-weight: bold:
+	font-weight: bold;
 }
 
 .loginbox p
@@ -239,38 +239,3 @@ input[type="email"],input[type="number"]
 	
 }
 
-/*Confirmation Page Styling*/
-.outer
-{  /* border:1px solid red;*/
-	height:100%;
-	width:100%;
-}
-.header
-{
-	/*border: 1px solid green;*/
-}
-
-.inner
-{
-	/*border :1px solid red;*/
-}
-.container
-{
-	border: 1px solid blue;
-	width:90%;
-	height:60%;
-}
-.left
-{
-	border: 1px solid red;
-	float:left;
-	height:600px;
-	width:300px
-}
-.right
-{
-	border: 1px solid blue;
-	float: left;
-	width:600px;
-	height :600px;
-}

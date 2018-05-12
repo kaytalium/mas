@@ -70,12 +70,10 @@ public class Login extends HttpServlet {
 						
 			if(rs.next())
 			{
-				 firstname = rs.getString("firstName");
-				 lastname = rs.getString("lastName");
-				 
+				User user = new User(rs.getInt("ID"),rs.getString("FirstName"),rs.getString("LastName"),rs.getString("Username"),null, rs.getInt("PatientID"));
+				
 				 HttpSession session = request.getSession();
-				 session.setAttribute("sess_fname",firstname); 
-				 session.setAttribute("sess_lname",lastname); 
+				 session.setAttribute("session_user",user); 
 				 session.setAttribute("isAuth", true);//This is to be used in all other pages 
 
 				 

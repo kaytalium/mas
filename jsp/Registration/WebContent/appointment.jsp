@@ -1,27 +1,32 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="java.io.*, java.util.*, java.sql.*" %> 
+    <%@ page import="jdbc.User"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link href = "css/appointmentstyle.css" rel="stylesheet" type="text/css">
 <title>Appointment</title>
 </head>
 <body>
-<h1>Create Appointment</h1>
+
 <br><br><br>
 <%
-String Fname=(String)session.getAttribute("sess_fname"); 
-String Lname=(String)session.getAttribute("sess_lname"); 
-out.print("Welcome: " +" "+ Fname + " " + Lname); 
+//User user = (User)session.getAttribute("session_user"); 
+//String Lname=(String)session.getAttribute("sess_lname"); 
+//out.print("Welcome: " +" "+ user.fullname()); 
 
 %>
 
+<div class="appointment-form"></div>
+<h1>Create Appointment</h1>
 <br><br>
-<form action="Appointment" method="post">
-<label>Patient ID</label> <input type="number" name="p_id" style= "width: 250px"><br><br>
-<label>First Name</label> <input type="text" name="Fname" style= "width:250px"><br><br>
-<label>Last Name</label> <input type="text" name="Lname"  style="width:250px"><br><br>
+<div class="appointment-form">
+<form id="appointment-form" action="Appointment" method="post">
+<label>Patient ID</label> <input type="number" class = "form-control" name="p_id" style= "width: 250px"><br><br>
+<label>First Name</label> <input type="text" class = "form-control" name="Fname" style= "width:250px"><br><br>
+<label>Last Name</label> <input type="text" class = "form-control" name="Lname"  style="width:250px"><br><br>
  <label>Services</label>
 <select class = "form-control" name="services" style= "width: 250px">
 <option value ="-1">Select a Service</option>
@@ -82,13 +87,14 @@ try {
 
 </select> 
 <br><br>
-<label>Date</label> <input type="date" name="adate" style="width:250px">
+<label>Date</label> <input type="date" class = "form-control" name="adate" style="width:250px">
 <br><br>
 <label>Remark</label><br><br>
-<textarea rows="4" cols="50" name="remark"></textarea> <br><br>
-<input type="submit" value="Make Appointment"> 
+<textarea rows="4" cols="50" class = "form-control" name="remark"></textarea> <br><br>
+<input type="submit"  class = "form-control submit" value="Make Appointment"> 
 
 </form>
+</div>
 
 </body>
 </html>
