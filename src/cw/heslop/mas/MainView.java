@@ -1,56 +1,58 @@
 package cw.heslop.mas;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
+import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Color;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.awt.SystemColor;
-import javax.swing.JSeparator;
 import java.awt.Cursor;
-import javax.swing.UIManager;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import javax.swing.JTable;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-
 import cw.heslop.mas.component.ApplicationMenu;
+import cw.heslop.mas.component.AppointmentItem;
+import cw.heslop.mas.component.AppointmentList;
 import cw.heslop.mas.component.UserProfile;
+import cw.heslop.mas.objects.DatabaseConnection;
+import cw.heslop.mas.objects.Person;
+import cw.heslop.mas.objects.TimeOfDay;
 import cw.heslop.mas.objects.User;
+import javax.swing.JCheckBox;
 
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import java.awt.Rectangle;
-import java.awt.Insets;
-import java.awt.Dimension;
-import javax.swing.border.CompoundBorder;
-import java.awt.Frame;
 
 public class MainView extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3443174621881190718L;
+	public boolean isSettings = false;
+	private DatabaseConnection conn = new DatabaseConnection("mas");
 	private JPanel contentPane;
-	private JPanel pl_btn_pl;
 	private User activeUser;
-	JLabel lblActiveUserEmail;
+	private JLabel lblActiveUserEmail;
+	private DefaultListModel<JPanel> model;
+	private JPanel pl_sidebar;
+	private JLabel lbl_sb_title;
+	private PatientViewer patientViewer;
+	private NewPatientView pv;
+	
+	public AppointmentList alist;
+	public JPanel pl_main;
+	public PatientListView plv;
+	public JPanel pl_home_options;	
+	public boolean isPatientViewer = false;
+	public boolean isNewPatientViewer;
+	public UserProfile us;
+	
+
+	public JPanel getPl_main() {
+		return pl_main;
+	}
 
 	/**
 	 * Launch the application.
@@ -76,7 +78,7 @@ public class MainView extends JFrame {
 		setLocationByPlatform(true);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 813, 594);
+		setBounds(100, 100, 894, 660);
 		setLocationRelativeTo(null);
 		
 		new ApplicationMenu(this);
@@ -87,19 +89,64 @@ public class MainView extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		UserProfile us = new UserProfile();
+		us = new UserProfile();
 		us.setVisible(false);
 		us.setBounds(0, 66, 809, 426);
-	
 		
-		contentPane.add(us);
+		model = new DefaultListModel<JPanel>();
 		
-		JPanel pl_home_options = new JPanel();
+		pl_home_options = new JPanel();
 		pl_home_options.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		pl_home_options.setBackground(Color.WHITE);
-		pl_home_options.setBounds(0, 66, 809, 440);
+		pl_home_options.setBounds(0, 66, 888, 540);
 		contentPane.add(pl_home_options);
 		pl_home_options.setLayout(null);
+		
+		pl_sidebar = new JPanel();
+		pl_sidebar.setBackground(Color.DARK_GRAY);
+		pl_sidebar.setBounds(0, 0, 274, 541);
+		pl_home_options.add(pl_sidebar);
+		pl_sidebar.setLayout(null);
+		
+		lbl_sb_title = new JLabel("Today's Appointments");
+		lbl_sb_title.setBounds(1, 0, 272, 47);
+		pl_sidebar.add(lbl_sb_title);
+		lbl_sb_title.setOpaque(true);
+		lbl_sb_title.setHorizontalTextPosition(SwingConstants.CENTER);
+		lbl_sb_title.setHorizontalAlignment(SwingConstants.CENTER);
+		lbl_sb_title.setForeground(Color.WHITE);
+		lbl_sb_title.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lbl_sb_title.setBackground(Color.DARK_GRAY);
+		
+		JPanel pl_footer = new JPanel();
+		pl_footer.setBounds(1, 480, 272, 61);
+		pl_sidebar.add(pl_footer);
+		pl_footer.setBackground(new Color(0, 20, 20));
+		pl_footer.setLayout(null);
+		
+		JLabel lblCopyrightMasCompany = new JLabel("Copyright 2018 MAS Company Ltd. ");
+		lblCopyrightMasCompany.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblCopyrightMasCompany.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCopyrightMasCompany.setVerticalAlignment(SwingConstants.TOP);
+		lblCopyrightMasCompany.setForeground(SystemColor.inactiveCaptionBorder);
+		lblCopyrightMasCompany.setBounds(0, 11, 269, 13);
+		lblCopyrightMasCompany.setFont(new Font("Microsoft Sans Serif", Font.PLAIN, 10));
+		pl_footer.add(lblCopyrightMasCompany);
+		
+		JLabel lblAllRightsReserved = new JLabel("All Rights Reserved");
+		lblAllRightsReserved.setForeground(Color.WHITE);
+		lblAllRightsReserved.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblAllRightsReserved.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAllRightsReserved.setBounds(0, 30, 269, 14);
+		pl_footer.add(lblAllRightsReserved);
+		
+		pl_main = new JPanel();
+		pl_main.setBounds(272, 0, 616, 541);
+		pl_home_options.add(pl_main);
+		
+		patientListModel();
+		
+		this.initizeAppointmentList();
 		
 		us.lblBackToMenu.addMouseListener(new MouseAdapter() {
 			@Override
@@ -108,156 +155,10 @@ public class MainView extends JFrame {
 			}
 		});
 		
-		pl_btn_pl = new JPanel();
-		pl_btn_pl.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				mouseEnter(pl_btn_pl);
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				mouseLeave(pl_btn_pl);
-			}
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				//need to setup the session
-//					PatientListView list = new PatientListView();
-//					list.setVisible(true);
-				navigate("PatientListView"); 
-			}
-		});
-		
-		pl_btn_pl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		pl_btn_pl.setToolTipText("View the latest list of customers worked on");
-		pl_btn_pl.setBackground(new Color(51, 51, 51));
-		pl_btn_pl.setBounds(233, 49, 153, 120);
-		pl_home_options.add(pl_btn_pl);
-		pl_btn_pl.setLayout(null);
-		
-		JLabel lblPatientList = new JLabel("Patient List");
-		lblPatientList.setForeground(new Color(255, 255, 255));
-		lblPatientList.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblPatientList.setBounds(51, 73, 75, 29);
-		pl_btn_pl.add(lblPatientList);
-		
-		JLabel label = new JLabel("");
-		label.setIcon(new ImageIcon(MainView.class.getResource("/icons/icons8_Bulleted_List_52px.png")));
-		label.setBounds(51, 24, 65, 51);
-		pl_btn_pl.add(label);
-		
-		JPanel pl_btn_np = new JPanel();
-		pl_btn_np.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		pl_btn_np.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				mouseEnter(pl_btn_np);
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				mouseLeave(pl_btn_np);
-			}
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				navigate("NewPatientView");
-				
-			}
-		});
-		pl_btn_np.setLayout(null);
-		pl_btn_np.setToolTipText("Create New Customer");
-		pl_btn_np.setBackground(new Color(51, 51, 51));
-		pl_btn_np.setBounds(428, 49, 153, 120);
-		pl_home_options.add(pl_btn_np);
-		
-		JLabel lblNewPatient_1 = new JLabel("New Patient");
-		lblNewPatient_1.setForeground(Color.WHITE);
-		lblNewPatient_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblNewPatient_1.setBounds(41, 69, 75, 29);
-		pl_btn_np.add(lblNewPatient_1);
-		
-		JLabel label_11 = new JLabel("");
-		label_11.setIcon(new ImageIcon(MainView.class.getResource("/icons/icons8_Document_52px.png")));
-		label_11.setBounds(51, 24, 65, 51);
-		pl_btn_np.add(label_11);
-		
-		JPanel pl_btn_ap = new JPanel();
-		pl_btn_ap.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		pl_btn_ap.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				mouseEnter(pl_btn_ap);
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				mouseLeave(pl_btn_ap);
-			}
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				new AppointmentView().setVisible(true);
-			}
-		});
-		pl_btn_ap.setLayout(null);
-		pl_btn_ap.setToolTipText("View the latest list of customers worked on");
-		pl_btn_ap.setBackground(new Color(51, 51, 51));
-		pl_btn_ap.setBounds(233, 181, 153, 120);
-		pl_home_options.add(pl_btn_ap);
-		
-		JLabel lblAppoinment = new JLabel("Appoinments");
-		lblAppoinment.setForeground(Color.WHITE);
-		lblAppoinment.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblAppoinment.setBounds(41, 69, 75, 29);
-		pl_btn_ap.add(lblAppoinment);
-		
-		JLabel label_12 = new JLabel("");
-		label_12.setIcon(new ImageIcon(MainView.class.getResource("/icons/icons8_Timesheet_52px_1.png")));
-		label_12.setBounds(51, 24, 65, 51);
-		pl_btn_ap.add(label_12);
-		
-		JPanel pl_btn_pmt = new JPanel();
-		pl_btn_pmt.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		pl_btn_pmt.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				mouseEnter(pl_btn_pmt);
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				mouseLeave(pl_btn_pmt);
-			}
-		});
-		pl_btn_pmt.setLayout(null);
-		pl_btn_pmt.setToolTipText("View the latest list of customers worked on");
-		pl_btn_pmt.setBackground(new Color(51, 51, 51));
-		pl_btn_pmt.setBounds(428, 181, 153, 120);
-		pl_home_options.add(pl_btn_pmt);
-		
-		JLabel lblPayment_1 = new JLabel("Payment");
-		lblPayment_1.setForeground(Color.WHITE);
-		lblPayment_1.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblPayment_1.setBounds(51, 68, 75, 29);
-		pl_btn_pmt.add(lblPayment_1);
-		
-		JLabel label_13 = new JLabel("");
-		label_13.setIcon(new ImageIcon(MainView.class.getResource("/icons/icons8_Card_Payment_52px.png")));
-		label_13.setBounds(51, 24, 65, 51);
-		pl_btn_pmt.add(label_13);
-		
-		JPanel pl_footer = new JPanel();
-		pl_footer.setBackground(new Color(0, 20, 20));
-		pl_footer.setBounds(0, 503, 815, 60);
-		contentPane.add(pl_footer);
-		pl_footer.setLayout(null);
-		
-		JLabel lblCopyrightMasCompany = new JLabel("Copyright 2018 MAS Company Ltd. All Rights Reserved");
-		lblCopyrightMasCompany.setForeground(SystemColor.inactiveCaptionBorder);
-		lblCopyrightMasCompany.setBounds(289, 14, 271, 13);
-		lblCopyrightMasCompany.setFont(new Font("Microsoft Sans Serif", Font.PLAIN, 10));
-		pl_footer.add(lblCopyrightMasCompany);
-		
 		JPanel main_menu = new JPanel();
 		main_menu.setBackground(new Color(255, 165, 0));
 		main_menu.setForeground(new Color(255, 255, 255));
-		main_menu.setBounds(0, 0, 815, 66);
+		main_menu.setBounds(0, 0, 888, 66);
 		contentPane.add(main_menu);
 		main_menu.setLayout(null);
 		
@@ -280,10 +181,10 @@ public class MainView extends JFrame {
 		main_menu.add(lblMedicalManagementSystem);
 		
 		JPanel pl_btn_exit = new JPanel();
+		pl_btn_exit.setBounds(759, 0, 129, 66);
+		main_menu.add(pl_btn_exit);
 		pl_btn_exit.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		pl_btn_exit.setBackground(new Color(90, 10, 10));
-		pl_btn_exit.setBounds(585, 0, 235, 66);
-		main_menu.add(pl_btn_exit);
 		pl_btn_exit.setLayout(null);
 		
 		
@@ -301,19 +202,12 @@ public class MainView extends JFrame {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				pl_home_options.setVisible(false);
-//				setup the information
-				us.lbl_fname.setText(activeUser.getFirstname());
-				us.lbl_lname.setText(activeUser.getLastname());
-				us.lbl_email.setText(activeUser.getEmail());
-				us.lbl_acct_type.setText(activeUser.getUserType());
-				us.setUserID(activeUser.getUserID());
-				us.setVisible(true);
+				settings();
 			}
 		});
 		
 		lblActiveUserEmail.setForeground(new Color(255, 255, 255));
-		lblActiveUserEmail.setBounds(21, 43, 88, 14);
+		lblActiveUserEmail.setBounds(10, 11, 88, 14);
 		pl_btn_exit.add(lblActiveUserEmail);
 		
 		JLabel lblLogout = new JLabel("Logout");
@@ -328,47 +222,52 @@ public class MainView extends JFrame {
 		lblLogout.setHorizontalTextPosition(SwingConstants.LEADING);
 		lblLogout.setForeground(new Color(255, 255, 255));
 		lblLogout.setIcon(new ImageIcon(MainView.class.getResource("/icons/icons8_Logout_Rounded_Up_32px.png")));
-		lblLogout.setBounds(137, 34, 76, 32);
+		lblLogout.setBounds(10, 31, 76, 32);
 		pl_btn_exit.add(lblLogout);
 		
-		JLabel label_1 = new JLabel("|");
-		label_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label_1.setForeground(new Color(255, 255, 255));
-		label_1.setBounds(110, 43, 20, 14);
-		pl_btn_exit.add(label_1);
+		JCheckBox chckbxCollapseSideBar = new JCheckBox("Collapse Side bar");
+		chckbxCollapseSideBar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(chckbxCollapseSideBar.isSelected()) {
+					pl_sidebar.setBounds(0, 0, 0, 541);
+					pl_main.setBounds(272, 0, 900, 541);
+				}
+				else {
+					pl_sidebar.setBounds(0, 0, 274, 541);
+					pl_main.setBounds(272, 0, 616, 541);
+				}
+			}
+		});
+		chckbxCollapseSideBar.setBorder(null);
+		chckbxCollapseSideBar.setForeground(new Color(255, 255, 255));
+		chckbxCollapseSideBar.setBackground(new Color(255, 165, 0));
+		chckbxCollapseSideBar.setBounds(272, 33, 136, 23);
+		main_menu.add(chckbxCollapseSideBar);
 		
 	}
 	
-	void mouseEnter(JPanel btn){
-		btn.setBackground(new Color(68,68,68));
+	public void settings() {
+		
+		
+		if(this.isNewPatientViewer) {
+			this.closeNewPatientViewer();
+		}
+		pl_home_options.setVisible(false);
+		isSettings = true;
+//		setup the information
+		us.lbl_fname.setText(activeUser.getFirstname());
+		us.lbl_lname.setText(activeUser.getLastname());
+		us.lbl_email.setText(activeUser.getEmail());
+		us.lbl_acct_type.setText(activeUser.getUserType());
+		us.setUserID(activeUser.getUserID());
+		us.setVisible(true);
+		contentPane.add(us);
+		
 	}
-	
-	void mouseLeave(JPanel btn) {
-		btn.setBackground(new Color(51,51,51));
-	}
-	
+
 	public void CloseFrame(){
 	    super.dispose();
-	}
-	
-	private void navigate(String className) {
-		
-		try {
-			Class c = Class.forName("cw.heslop.mas."+className);
-			Object obj = c.newInstance();
-			
-			Method start = c.getMethod("setVisible",boolean.class);
-			start.invoke(obj,true);
-			
-			Method m = c.getDeclaredMethod("setParent", JFrame.class);
-			m.invoke(obj,this);
-			
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
 	}
 	
 	
@@ -377,7 +276,155 @@ public class MainView extends JFrame {
 //		store the logged in user
 		activeUser = user;
 		//
-		lblActiveUserEmail.setText(user.getFirstname() +" "+ user.getLastname());
+		lblActiveUserEmail.setText(user.getFullname());
 		return this;
 	}
+	
+	protected void initizeAppointmentList() {
+				
+		//check if coming from the patient list view with a patient ID, else show new 
+				String query = "SELECT `a`.`id`, `a`.`patientID`, CONCAT(`p`.`first_name`,' ',`p`.`last_name`) as `patient_name`, `a`.`date` as `appointment_date`, `d`.`name` as `doctor_name`"+ 
+				"FROM `appointment` `a`, `doctor` `d`, `person` `p` WHERE"+
+		        "`a`.`date`>='"+Helper.getTodayDateTimeStamp(TimeOfDay.start)+"' AND `a`.`date`<'"+Helper.getTodayDateTimeStamp(TimeOfDay.end)+"' AND"+
+		        "`a`.`patientID`=`p`.`id` AND `a`.`doctorID`=`d`.`id`"+
+				"ORDER BY `a`.`date`  DESC";
+				
+				
+				ResultSet rs = conn.executeStatementReturnResult(query);
+			
+				try {
+					
+					//get the size of the row 
+					rs.last();
+				    int size = rs.getRow();
+				    rs.beforeFirst();
+				    AppointmentItem[] aItems = new AppointmentItem[size];
+					int counter = 0;
+					
+					while(rs.next()) {
+						String name = rs.getString("patient_name");
+						String doctorName = rs.getString("doctor_name");
+						aItems[counter] = new AppointmentItem(null,
+								Helper.dateFormatter("h:mm a", rs.getTimestamp("appointment_date")),
+								name,doctorName,rs.getInt("id"),rs.getInt("patientID") ); 
+						counter++;
+					}
+					alist = new AppointmentList(aItems);
+					alist.setMainView(this);
+					alist.setBounds(0, 46, 271, 435);
+					this.pl_sidebar.add(alist);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 }
+	
+	
+	private void patientListModel() {
+		plv = new PatientListView();
+		plv.setParent(this);
+		plv.setSize(616, 541);
+		plv.setLocation(0, 0);
+		pl_main.setLayout(null);
+		
+//		plv.setBounds(0, 0, 70, 14);
+		pl_main.add(plv);
+		
+		
+	}
+
+	public void activatePateintView(String patientID, int appointmentID) {
+		// TODO Auto-generated method stub
+		patientViewer = new PatientViewer();
+		patientViewer.setPatientID(patientID);
+		patientViewer.setAppointments(patientID, appointmentID);
+		pl_main.setVisible(false);
+		patientViewer.setBounds(272, 0, 616, 541);
+		patientViewer.setParent(this);
+		pl_home_options.add(patientViewer);
+		isPatientViewer  = true;
+		activatePatientListView(patientID);
+	}
+
+	
+
+	public void closePatientViewer() {
+		// TODO Auto-generated method stub
+		patientViewer.setVisible(false);
+		this.pl_home_options.remove(patientViewer);
+		this.pl_home_options.revalidate();
+	    this.pl_home_options.repaint();
+		
+		pl_main.setVisible(true);
+		this.pl_sidebar.remove(2);
+		
+		lbl_sb_title.setText("Today's Appointments");
+		initizeAppointmentList();
+	}
+
+	public void activatePatientListView(String patientID) {
+
+		//change the appointment list to reflect current user appointments
+		
+		//check if coming from the patient list view with a patient ID, else show new 
+		String query = "SELECT `a`.`id`, `a`.`patientID`, CONCAT(`p`.`first_name`,' ',`p`.`last_name`) as `patient_name`, "+
+		"`a`.`date` as `appointment_date`, `d`.`name` as `doctor_name` "+
+		"FROM `appointment` `a`, `doctor` `d`, `person` `p` WHERE `a`.`patientID`='"+patientID+"' AND"+ 
+		"`a`.`patientID`=`p`.`id` AND `a`.`doctorID`=`d`.`id`"+  
+		"ORDER BY `a`.`date`  DESC";
+		
+		ResultSet rs = conn.executeStatementReturnResult(query);
+	
+		try {
+			
+			//get the size of the row 
+			rs.last();
+		    int size = rs.getRow();
+		    rs.beforeFirst();
+		    AppointmentItem[] aItems = new AppointmentItem[size];
+			int counter = 0;
+			
+			this.pl_sidebar.remove(2);
+			
+			while(rs.next()) {
+				String name = rs.getString("patient_name");
+				String doctorName = rs.getString("doctor_name");
+				aItems[counter] = new AppointmentItem(Helper.dateFormatter("MMM dd, yy", rs.getTimestamp("appointment_date")),
+						Helper.dateFormatter("h:mm a", rs.getTimestamp("appointment_date")),
+						name,doctorName,rs.getInt("id"),rs.getInt("patientID"));  
+				counter++;
+			}
+			this.lbl_sb_title.setText("Appointments");
+			alist = new AppointmentList(aItems);
+			alist.setMainView(this);
+			alist.setBounds(0, 46, 271, 435);
+			
+			this.pl_sidebar.add(alist);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void createNewPatientViewer(boolean isEdit, Person person) {
+		this.isNewPatientViewer = true;
+		if(isEdit) {
+			pv = new NewPatientView(person);	
+		}else {
+			pv = new NewPatientView(null);		
+		}
+		
+		pv.setBounds(0, 66, 888, 540);
+		pl_home_options.setVisible(false);;
+		pv.setParent(this);
+		contentPane.add(pv);
+	}
+
+	public void closeNewPatientViewer() {
+		this.contentPane.remove(pv);
+		this.isNewPatientViewer = false;
+		this.pl_home_options.setVisible(true);
+	}
+}
+

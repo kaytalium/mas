@@ -158,5 +158,21 @@ public class Person {
 				this.getCountry(),
 				this.getDateOfBirth());
 	}
+	
+	public String updateQuery() {
+		return String.format("UPDATE person set title='%s', first_name='%s', last_name='%s', email='%s', contact='%s', gender='%s', address='%s', city='%s', country='%s', dob='%s' WHERE id='%s'", 
+				this.getTitle(),
+				this.getFirstname(),
+				this.getLastname(),
+				this.getEmail(),
+				this.getContact(),
+				this.getGender(),
+				this.getAddress(),
+				this.getCity(),
+				this.getCountry(),
+				this.getDateOfBirth(),
+				this.getPersonId()
+				);
+	}
 
 }

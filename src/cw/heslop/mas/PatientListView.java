@@ -37,6 +37,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import javax.swing.JTextField;
@@ -45,71 +47,43 @@ import javax.swing.border.MatteBorder;
 import javax.swing.border.CompoundBorder;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial")
-public class PatientListView extends JFrame {
+public class PatientListView extends JPanel {
 
-	private JPanel contentPane;
+
 	private JTable table;
 	private MTextField txt_search;
-	private JFrame parent;
-	ApplicationMenu menu;
+	private MainView parent;
+
+
 
 	/**
-	 * Launch the application.
+	 * Create the panel.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PatientListView frame = new PatientListView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public PatientListView() throws SQLException {
-		setTitle("MAS");
-		
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 813, 674);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		menu = new ApplicationMenu(this);
-		menu.setExitOption(1);
-		
+	public PatientListView(){
+			
+//		setBackground(new Color(255, 0, 0));
+		setBounds(0, 0, 616, 541);
+				
 		//create a database connection and get the data from the person table ready
 		DatabaseConnection dc = new DatabaseConnection("mas");
 		ResultSet rs = dc.executeStatementReturnResult("Select id as 'Patient ID', first_name, last_name, gender, contact from person");
+		setLayout(null);
 				
 		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 809, 76);
+		panel.setBounds(0, 0, 616, 71);
 		panel.setLayout(null);
 		panel.setForeground(Color.WHITE);
-		panel.setBackground(new Color(255, 165, 0));
-		contentPane.add(panel);
-		
-		JLabel label = new JLabel("");
-		label.setIcon(new ImageIcon(PatientListView.class.getResource("/icons/icons8_Stethoscope_64px_3.png")));
-		label.setForeground(Color.WHITE);
-		label.setBounds(10, 0, 77, 60);
-		panel.add(label);
+		panel.setBackground(Color.WHITE);
+		add(panel);
 		
 		JLabel lbl_searchResult = new JLabel("We found 36 matches for your search");
 		lbl_searchResult.setVisible(false);
 		lbl_searchResult.setFont(new Font("Arial", Font.BOLD, 13));
-		lbl_searchResult.setForeground(Color.WHITE);
-		lbl_searchResult.setBounds(150, 45, 418, 32);
+		lbl_searchResult.setForeground(Color.BLACK);
+		lbl_searchResult.setBounds(10, 39, 418, 32);
 		panel.add(lbl_searchResult);
 		
         txt_search = new MTextField();
@@ -160,12 +134,12 @@ public class PatientListView extends JFrame {
 				}
         	}
         });
-        txt_search.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-		txt_search.setBounds(150, 11, 417, 32);
+        txt_search.setBorder(new CompoundBorder(new LineBorder(new Color(64, 64, 64)), new EmptyBorder(0, 5, 0, 0)));
+		txt_search.setBounds(10, 11, 417, 32);
 		Font fieldFont = new Font("Arial", Font.PLAIN, 20);
         txt_search.setFont(new Font("Arial", Font.PLAIN, 14));
         txt_search.setBackground(Color.white);
-        txt_search.setForeground(Color.gray.brighter());
+        txt_search.setForeground(Color.LIGHT_GRAY);
         txt_search.setColumns(30);
 		panel.add(txt_search);
 		
@@ -173,22 +147,22 @@ public class PatientListView extends JFrame {
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setBackground(new Color(255, 255, 0));
 		lblNewLabel_1.setIcon(new ImageIcon(PatientListView.class.getResource("/icons/icons8_Search_32px.png")));
-		lblNewLabel_1.setBounds(565, 11, 54, 32);
+		lblNewLabel_1.setBounds(425, 11, 54, 32);
 		panel.add(lblNewLabel_1);
 		
 				
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(0, 77, 809, 500);
-		contentPane.add(panel_1);
+		panel_1.setBounds(0, 69, 616, 470);
+		add(panel_1);
 		panel_1.setLayout(null);
 		
 		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(0, 0, 809, 500);
+		panel_4.setBounds(0, 0, 616, 470);
 		panel_1.add(panel_4);
 		panel_4.setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 809, 503);
+		scrollPane.setBounds(0, 0, 616, 470);
 		scrollPane.setColumnHeader(new JViewport() {
 		      @Override public Dimension getPreferredSize() {
 		          Dimension d = super.getPreferredSize();
@@ -216,7 +190,12 @@ public class PatientListView extends JFrame {
 		table.setRowHeight(32);
 		
 		
-		table.setModel(buildTableModel(rs));
+		try {
+			table.setModel(buildTableModel(rs));
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
 		renderer.setPreferredSize(new Dimension(0, 0));
@@ -232,8 +211,8 @@ public class PatientListView extends JFrame {
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(new Color(0, 20, 20));
-		panel_2.setBounds(0, 575, 809, 70);
-		contentPane.add(panel_2);
+		panel_2.setBounds(313, 5, 1, 1);
+		add(panel_2);
 		panel_2.setLayout(null);
 		
 				
@@ -315,18 +294,11 @@ public class PatientListView extends JFrame {
 		return size;
 	}
 	
-	public void setParent(JFrame parent) {
-		parent.setVisible(false);
-		this.parent = parent;
-		menu.setExitWindow(parent);
-		
+	public void setParent(MainView parent) {
+		this.parent = parent;		
 	}
 	
 	private void setNavigation(String patientID) {
-		this.setEnabled(false);
-		PatientViewer patientViewer = new PatientViewer();
-		patientViewer.setPatientID(patientID);
-		patientViewer.setParent(this);
-		patientViewer.setVisible(true);
+		parent.activatePateintView(patientID, 0);
 	}
 }

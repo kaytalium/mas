@@ -1,10 +1,15 @@
 package cw.heslop.mas;
+import java.sql.ResultSet;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -80,6 +85,69 @@ public class Helper {
 		
 	}
 	
+	public static int dbrowCount(ResultSet rs) {
+		int size = 0;
+		try {
+		    rs.last();
+		    size = rs.getRow();
+		    rs.beforeFirst();
+		}
+		catch(Exception ex) {
+		    return 0;
+		}
+		return size;
+	}
 	
+	public static Date createDateTime(Date date, String time) {
+		
+	
+		//2018-05-18 06:30:00
+		//yyyy-MM-dd hh:mm:ss
+		
+		String[] tarray = time.split(":");
+		String[] darray = dateFormatter(null,date).split(":");
+		
+		
+		 LocalDate d = LocalDate.of(Integer.parseInt(darray[0]), Integer.parseInt(darray[1]), Integer.parseInt(darray[2]));
+	        LocalTime t = LocalTime.of(Integer.parseInt(tarray[0]), Integer.parseInt(tarray[1]), Integer.parseInt(tarray[2]));
+	        LocalDateTime localDateTime = LocalDateTime.of(d, t);
+	        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+	        
+	        String combineDate = localDateTime.format(format);
+	        
+	        try {
+				return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(combineDate);
+				
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	        
+	       
+		
+	
+		 
+		
+		return null;
+	}
+	
+	public static Date convertStringToDate(String date1) {
+		 try {
+			return new SimpleDateFormat("dd/MM/yyyy").parse(date1);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		 return null;
+	}
+	
+	public static String convertToJavaDateFormat(String d) {
+		//return dd//MM/yyyy
+		String[] s= d.split("-");
+		return s[2]+"/"+s[1]+"/"+s[0];
+		
+		
+		
+	}
 
 }

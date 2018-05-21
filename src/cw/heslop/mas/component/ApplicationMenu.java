@@ -18,21 +18,22 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import cw.heslop.mas.About;
+import cw.heslop.mas.LoginView;
+import cw.heslop.mas.MainView;
 import cw.heslop.mas.NewPatientView;
+import cw.heslop.mas.Team;
+
 
 
 public class ApplicationMenu extends JMenuBar{
 
-	private JFrame jframe;
-	private int exitOption = 0;
+	private MainView mainParent;
 	private JMenuItem mntmClose;
-	private Window exitWindow;
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 7710791988288866966L;
 
-	public ApplicationMenu(JFrame jframe) {
+	public ApplicationMenu(MainView parent) {
 		super();
 		setBorderPainted(false);
 		setBorder(new LineBorder(new Color(192, 192, 192)));
@@ -42,8 +43,8 @@ public class ApplicationMenu extends JMenuBar{
 		setBackground(new Color(255, 255, 255));
 		setBounds(0, 0, 500, 10);
 		
-		this.jframe = jframe;
-		jframe.setJMenuBar(this);
+		this.mainParent = parent;
+		parent.setJMenuBar(this);
 		
 		JMenu mnFile = new JMenu("File");
 		mnFile.setPreferredSize(new Dimension(50, 22));
@@ -63,43 +64,25 @@ public class ApplicationMenu extends JMenuBar{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				new NewPatientView().setVisible(true);
-				jframe.dispose();
+				if(!mainParent.isNewPatientViewer && mainParent.isSettings) {
+					//close settings and then open new
+					mainParent.us.setVisible(false);
+					mainParent.isSettings= false;
+					mainParent.createNewPatientViewer(false, null);	
+				}
+				
+				if(!mainParent.isNewPatientViewer && !mainParent.isSettings) {
+					//close settings and then open new
+					
+					mainParent.createNewPatientViewer(false, null);	
+				}
+				
+				
 			}
 			
 			
 		});
 		mnNew.add(mntmNewPatient);
-		
-		JMenuItem mntmNewAppointment = new JMenuItem("New Appointment");
-		mntmNewAppointment.setPreferredSize(new Dimension(141, 35));
-		mnNew.add(mntmNewAppointment);
-		
-		JMenu mnOpen = new JMenu("Open");
-		mnOpen.setIcon(new ImageIcon(ApplicationMenu.class.getResource("/icons/icons8_Open_32px.png")));
-		mnOpen.setPreferredSize(new Dimension(77, 40));
-		mnFile.add(mnOpen);
-		
-		JMenuItem mntmAppointment = new JMenuItem("Appointment");
-		mntmAppointment.setPreferredSize(new Dimension(190, 35));
-		mnOpen.add(mntmAppointment);
-		
-		JMenuItem mntmPatientRecord = new JMenuItem("Patient Record");
-		mntmPatientRecord.setPreferredSize(new Dimension(121, 35));
-		mnOpen.add(mntmPatientRecord);
-		
-		JMenu mnPayment = new JMenu("Payment");
-		mnPayment.setPreferredSize(new Dimension(95, 35));
-		mnOpen.add(mnPayment);
-		
-		JMenuItem mntmMakeAPayment = new JMenuItem("Make a Payment");
-		mntmMakeAPayment.setPreferredSize(new Dimension(150, 35));
-		mnPayment.add(mntmMakeAPayment);
-		
-		JMenuItem mntmViewInvoice = new JMenuItem("View Invoice");
-		mntmViewInvoice.setPreferredSize(new Dimension(109, 35));
-		mnPayment.add(mntmViewInvoice);
 		
 		JSeparator separator = new JSeparator();
 		mnFile.add(separator);
@@ -112,7 +95,7 @@ public class ApplicationMenu extends JMenuBar{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				closeFrame();
+				System.exit(0);
 			}
 			
 			
@@ -126,11 +109,31 @@ public class ApplicationMenu extends JMenuBar{
 		JMenuItem mntmSettings = new JMenuItem("Settings");
 		mntmSettings.setIcon(new ImageIcon(ApplicationMenu.class.getResource("/icons/icons8_Settings_32px.png")));
 		mntmSettings.setPreferredSize(new Dimension(250, 40));
+		mntmSettings.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				mainParent.settings();
+			}
+			
+			
+		});
 		mnProfile.add(mntmSettings);
 		
 		JMenuItem mntmLogout = new JMenuItem("Logout");
 		mntmLogout.setIcon(new ImageIcon(ApplicationMenu.class.getResource("/icons/icons8_Logout_Rounded_Up_32px.png")));
 		mntmLogout.setPreferredSize(new Dimension(81, 40));
+		mntmLogout.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new LoginView().setVisible(true);
+				mainParent.dispose();				
+			}
+			
+			
+		});
 		mnProfile.add(mntmLogout);
 		
 		JMenu mnAbout = new JMenu("About");
@@ -139,45 +142,41 @@ public class ApplicationMenu extends JMenuBar{
 		JMenuItem mntmTeam = new JMenuItem("Team");
 		mntmTeam.setIcon(new ImageIcon(ApplicationMenu.class.getResource("/icons/icons8_People_32px.png")));
 		mntmTeam.setPreferredSize(new Dimension(250, 40));
+		mntmTeam.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Team team = new Team();
+				team.setVisible(true);
+				team.setApp(mainParent);				
+				mainParent.setEnabled(false);
+			}
+			
+		});
 		mnAbout.add(mntmTeam);
 		
 		JMenuItem mntmApplication = new JMenuItem("Application");
 		mntmApplication.setIcon(new ImageIcon(ApplicationMenu.class.getResource("/icons/icons8_Google_Code_32px.png")));
 		mntmApplication.setPreferredSize(new Dimension(105, 40));
+		mntmApplication.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				About about = new About();
+				about.setVisible(true);
+				about.setApp(mainParent);				
+				mainParent.setEnabled(false);
+			}
+			
+		});
 		mnAbout.add(mntmApplication);
 	}
 
-	public int getExitOption() {
-		return exitOption;
-	}
 
-	public void setExitOption(int exitOption) {
-		this.exitOption = exitOption;
-		if(exitOption == 0) {
-			mntmClose.setText("Exit");
-		}
-		if(exitOption == 1) {
-			mntmClose.setText("Close");
-			
-		}
-	}
-	
-	private void closeFrame() {
-		if(exitOption == 0)
-			System.exit(0);
-		
-		if(exitOption == 1) {
-			jframe.dispose();
-			exitWindow.setVisible(true);
-		}
-			
-		
-	}
 
-	public void setExitWindow(JFrame exitWindow) {
-		// TODO Auto-generated method stub
-		this.exitWindow = exitWindow;
-	}
+
 	
 
 }

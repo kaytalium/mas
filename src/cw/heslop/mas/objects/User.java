@@ -10,6 +10,7 @@ public class User {
 	private String userType;
 	private int status;
 	
+	
 		
 	public User() {
 		super();
@@ -72,6 +73,10 @@ public class User {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public String getFullname() {
+		return this.getFirstname()+" "+this.getLastname();
 	}
 	
 	

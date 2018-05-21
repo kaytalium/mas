@@ -12,48 +12,77 @@ import javax.swing.border.LineBorder;
 
 import cw.heslop.mas.Helper;
 import javax.swing.SwingConstants;
+import javax.swing.border.MatteBorder;
+import java.awt.Cursor;
 
 public class AppointmentItem extends JPanel {
 
-	/**
-	 * Create the panel.
-	 */
-	public JLabel dateLabel;  
-	public AppointmentItem(String date, String name, String doctorName) {
-		setBorder(new LineBorder(new Color(192, 192, 192)));
-		setBackground(new Color(240, 248, 255));
+	private int appointmentID;
+	private int patientID; 
+	public JLabel dateLabel;
+	
+	
+	public AppointmentItem(String date, String time, String name, String doctorName, int appointmentID, int patientID) {
+		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		setBorder(new MatteBorder(0, 0, 1, 0, (Color) Color.WHITE));
+		setBackground(Color.BLACK);
 		setLayout(null);
 		
+		this.appointmentID = appointmentID;
+		this.patientID = patientID;
+		
 		dateLabel = new JLabel();
-		dateLabel.setText("January 30 2018");
+		dateLabel.setForeground(Color.WHITE);
+		dateLabel.setText("Jan 30, 18");
 		
 		if(date == null) {
-			dateLabel.setText(Helper.getCurrentDate("MMM dd, yyyy"));
+			dateLabel.setText("");
 		}else {
 			dateLabel.setText(date);
 		}
 		
-		dateLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		dateLabel.setBounds(64, 42, 112, 14);
+		dateLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		dateLabel.setBounds(215, 35, 56, 14);
 		add(dateLabel);
 		
 		JLabel lblOvelHeslop = new JLabel((name == null?"John Doe":name));
+		lblOvelHeslop.setForeground(Color.WHITE);
 		lblOvelHeslop.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lblOvelHeslop.setBounds(64, 11, 112, 14);
+		lblOvelHeslop.setBounds(64, 20, 141, 14);
 		add(lblOvelHeslop);
 		
 		JLabel lblDrGreen = new JLabel("Dr. "+(doctorName == null?"Doctor":doctorName));
-		lblDrGreen.setBounds(64, 27, 141, 14);
+		lblDrGreen.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblDrGreen.setForeground(Color.WHITE);
+		lblDrGreen.setBounds(64, 35, 141, 14);
 		add(lblDrGreen);
 		
 		JLabel initials = new JLabel(initals((name == null?"John Doe":name)));
-		initials.setBorder(new LineBorder(new Color(0, 0, 0)));
+		initials.setBackground(new Color(255, 165, 0));
+		initials.setForeground(Color.WHITE);
+		initials.setBorder(new LineBorder(new Color(255, 165, 0)));
 		initials.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		initials.setHorizontalTextPosition(SwingConstants.CENTER);
 		initials.setHorizontalAlignment(SwingConstants.CENTER);
-		initials.setBounds(8, 12, 46, 44);
+		initials.setBounds(8, 11, 46, 42);
 		add(initials);
+		
+		JLabel lblTime = new JLabel((time == null?"":time));
+		lblTime.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblTime.setForeground(Color.WHITE);
+		lblTime.setBounds(215, 20, 46, 14);
+		add(lblTime);
+		
+		
 
+	}
+
+	public int getAppointmentID() {
+		return appointmentID;
+	}
+
+	public int getPatientID() {
+		return patientID;
 	}
 
 	private String initals(String name) {
@@ -62,4 +91,6 @@ public class AppointmentItem extends JPanel {
 		return ini.trim();
 		
 	}
+	
+	
 }

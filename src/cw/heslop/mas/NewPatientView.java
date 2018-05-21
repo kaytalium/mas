@@ -1,8 +1,4 @@
 package cw.heslop.mas;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
@@ -11,52 +7,35 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import java.awt.Insets;
 import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.border.CompoundBorder;
 import javax.swing.UIManager;
 import javax.swing.JRadioButton;
-import javax.swing.JSlider;
-import javax.swing.JScrollBar;
-import javax.swing.JFormattedTextField;
 import com.toedter.calendar.JDateChooser;
-
-import cw.heslop.mas.component.ApplicationMenu;
 import cw.heslop.mas.component.MTextField;
 import cw.heslop.mas.objects.DatabaseConnection;
 import cw.heslop.mas.objects.IDGenerator;
 import cw.heslop.mas.objects.Person;
-
-import com.toedter.calendar.JCalendar;
 import javax.swing.SwingConstants;
-import javax.swing.JSplitPane;
-import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.border.LineBorder;
-import javax.swing.text.DateFormatter;
-
-import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Date;
-import java.sql.SQLDataException;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class NewPatientView extends JFrame {
+public class NewPatientView extends JPanel {
 
-	private JPanel contentPane;
+
 	private Person person; 
-	
 	private MTextField tf_firstname, tf_lastname ;
 	private ButtonGroup genderButtonGroup = new ButtonGroup();
 	private MTextField textField_4;
@@ -69,53 +48,25 @@ public class NewPatientView extends JFrame {
 	private MTextField tf_address;
 	private MTextField tf_city;
 	private MTextField tf_country;
-	private JFrame parent;
-	private ApplicationMenu menu;
+	private MainView parent;
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					NewPatientView frame = new NewPatientView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public NewPatientView() {
-		setTitle("MAS");
-		setPreferredSize(new Dimension(813, 594));
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	
+	public NewPatientView(Person patient) {
+		setPreferredSize(new Dimension(888, 540));
 		setBounds(100, 100, 813, 594);
-		setLocationRelativeTo(null);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		menu = new ApplicationMenu(this);
-		menu.setExitOption(1);
-		
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(null);
+				
 		JPanel panel_1 = new JPanel();
 		panel_1.setForeground(Color.WHITE);
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_1.setBackground(Color.DARK_GRAY);
-		panel_1.setBounds(0, 48, 807, 481);
-		contentPane.add(panel_1);
+		panel_1.setBounds(0, 0, 888, 551);
+		add(panel_1);
 		panel_1.setLayout(null);
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(0, 68, 384, 287);
+		panel_2.setBounds(62, 105, 384, 287);
 		panel_1.add(panel_2);
 		panel_2.setBorder(new CompoundBorder(UIManager.getBorder("Button.border"), null));
 		panel_2.setBackground(Color.DARK_GRAY);
@@ -260,18 +211,18 @@ public class NewPatientView extends JFrame {
 		panel_2.add(label_8);
 		
 		JLabel lblPersonalInformation = new JLabel("Personal Information");
-		lblPersonalInformation.setBounds(22, 24, 255, 43);
+		lblPersonalInformation.setBounds(84, 61, 255, 43);
 		panel_1.add(lblPersonalInformation);
 		lblPersonalInformation.setForeground(new Color(255, 140, 0));
 		lblPersonalInformation.setFont(new Font("Tahoma", Font.BOLD, 22));
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(22, 58, 241, 9);
+		separator.setBounds(84, 95, 241, 9);
 		panel_1.add(separator);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(Color.DARK_GRAY);
-		panel_3.setBounds(431, 68, 314, 262);
+		panel_3.setBounds(493, 105, 314, 262);
 		panel_1.add(panel_3);
 		panel_3.setLayout(null);
 		
@@ -342,22 +293,22 @@ public class NewPatientView extends JFrame {
 		
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setOrientation(SwingConstants.VERTICAL);
-		separator_1.setBounds(395, 29, 10, 326);
+		separator_1.setBounds(457, 66, 10, 326);
 		panel_1.add(separator_1);
 		
 		JLabel lblAddressInformation = new JLabel("Address Information");
 		lblAddressInformation.setForeground(new Color(255, 140, 0));
 		lblAddressInformation.setFont(new Font("Tahoma", Font.BOLD, 22));
-		lblAddressInformation.setBounds(431, 24, 255, 43);
+		lblAddressInformation.setBounds(493, 61, 255, 43);
 		panel_1.add(lblAddressInformation);
 		
 		JSeparator separator_2 = new JSeparator();
-		separator_2.setBounds(428, 58, 241, 9);
+		separator_2.setBounds(490, 95, 241, 9);
 		panel_1.add(separator_2);
 		
 		JPanel panel_4 = new JPanel();
 		panel_4.setBackground(Color.DARK_GRAY);
-		panel_4.setBounds(383, 366, 358, 89);
+		panel_4.setBounds(457, 438, 358, 63);
 		panel_1.add(panel_4);
 		panel_4.setLayout(null);
 		
@@ -365,8 +316,7 @@ public class NewPatientView extends JFrame {
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				dispose();
-				parent.setVisible(true);
+				parent.closeNewPatientViewer();
 				
 			}
 		});
@@ -375,7 +325,7 @@ public class NewPatientView extends JFrame {
 		btnNewButton.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		btnNewButton.setIcon(new ImageIcon(NewPatientView.class.getResource("/icons/icons8_Cancel_22px.png")));
 		btnNewButton.setBackground(new Color(34, 139, 34));
-		btnNewButton.setBounds(23, 41, 144, 37);
+		btnNewButton.setBounds(22, 11, 144, 37);
 		panel_4.add(btnNewButton);
 		
 		JButton btnSave = new JButton("Save");
@@ -391,53 +341,119 @@ public class NewPatientView extends JFrame {
 		btnSave.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		btnSave.setIcon(new ImageIcon(NewPatientView.class.getResource("/icons/icons8_Save_22px.png")));
 		btnSave.setBackground(new Color(34, 139, 34));
-		btnSave.setBounds(193, 41, 144, 37);
+		btnSave.setBounds(186, 11, 144, 37);
 		panel_4.add(btnSave);
-		
-		JPanel panel_5 = new JPanel();
-		panel_5.setForeground(new Color(255, 255, 255));
-		panel_5.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_5.setBackground(new Color(255, 165, 0));
-		panel_5.setBounds(0, 0, 807, 46);
-		contentPane.add(panel_5);
-		panel_5.setLayout(null);
-		
 		IDGenerator newID = new IDGenerator();		
-		
 		textField_4 = new MTextField();
+		textField_4.setBounds(146, 21, 73, 24);
+		panel_1.add(textField_4);
 		textField_4.setBorder(new CompoundBorder(new LineBorder(new Color(255, 255, 255)), new EmptyBorder(0, 5, 0, 0)));
 		textField_4.setDisabledTextColor(new Color(255, 255, 255));
 		textField_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		textField_4.setForeground(new Color(255, 255, 255));
-		textField_4.setBackground(new Color(255, 165, 0));
+		textField_4.setBackground(Color.DARK_GRAY);
 		textField_4.setText(Integer.toString(newID.getNewID()));
 		textField_4.setEnabled(false);
-		textField_4.setBounds(87, 11, 73, 24);
-		panel_5.add(textField_4);
 		textField_4.setColumns(10);
 		
 		JLabel lblPatientId = new JLabel("Patient ID: ");
-		lblPatientId.setBounds(25, 16, 82, 14);
-		panel_5.add(lblPatientId);
+		lblPatientId.setForeground(Color.WHITE);
+		lblPatientId.setBounds(83, 27, 62, 14);
+		panel_1.add(lblPatientId);
+		
+		if(patient != null) {
+			this.textField_4.setText(""+patient.getPersonId());
+			this.tf_firstname.setText(patient.getFirstname());
+			this.tf_lastname.setText(patient.getLastname());
+			this.tf_contact.setText(patient.getContact());
+			this.tf_email.setText(patient.getEmail());
+			this.tf_address.setText(patient.getAddress());
+			this.tf_city.setText(patient.getCity());
+			this.tf_country.setText(patient.getCountry());
+			
+			//
+			this.dc_dob.setDate(Helper.convertStringToDate(Helper.convertToJavaDateFormat(patient.getDateOfBirth())));
+			this.cb_title.setSelectedItem(patient.getTitle());
+			if(patient.getGender()=="Male") {
+				this.rdbtnMale.setSelected(true);
+			}else {
+				this.rdbtnFemale.setSelected(true);
+			}
+			
+			//set the update button
+			btnSave.setVisible(false);
+			JButton btnUpdate = new JButton("Update");
+			btnUpdate.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(isValidated()) {
+						updateAccount(patient.getPersonId());
+					}
+				}
+			});
+			btnUpdate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			btnUpdate.setForeground(Color.WHITE);
+			btnUpdate.setBorder(new LineBorder(Color.LIGHT_GRAY));
+			btnUpdate.setIcon(new ImageIcon(NewPatientView.class.getResource("/icons/icons8_Save_22px.png")));
+			btnUpdate.setBackground(new Color(34, 139, 34));
+			btnUpdate.setBounds(186, 11, 144, 37);
+			panel_4.add(btnUpdate);
+			
+		}
+		
+	}
+
+	protected void updateAccount(int id) {
+		// TODO Auto-generated method stub
+				try {
+					DatabaseConnection dc = new DatabaseConnection("mas");
+					person.setPersonId(id);
+					dc.CRUD(person.updateQuery());
+					JOptionPane.showMessageDialog(null, "Record Update", "Account Updated", JOptionPane.INFORMATION_MESSAGE);
+						
+				}catch(Exception e) {
+					JOptionPane.showMessageDialog(null, "We found a problem and cannot update your record :( ", "Updating Account", JOptionPane.INFORMATION_MESSAGE);
+				}
+				finally {
+					parent.closeNewPatientViewer();
+				}
+		
 	}
 
 	protected void createAccount() {
 		// TODO Auto-generated method stub
 		try {
 			DatabaseConnection dc = new DatabaseConnection("mas");
-//			dc.CRUD(person.insertQuery());
-			System.out.println("peson Query: "+person.insertQuery());
-//			JOptionPane.showMessageDialog(null, "Record Added", "Creating new Account", JOptionPane.INFORMATION_MESSAGE);
-		
+			dc.CRUD(person.insertQuery());
+			System.out.println("person Query: "+person.insertQuery());
+			JOptionPane.showMessageDialog(null, "Record Added", "new Account Created", JOptionPane.INFORMATION_MESSAGE);
+				
 		}catch(Exception e) {
-			JOptionPane.showMessageDialog(null, "We have a proble cannot save data :(", "Creating new Account", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "We have a problem cannot save data :( ", "Creating new Account", JOptionPane.INFORMATION_MESSAGE);
 		}
-		
+		finally {
+			parent.closeNewPatientViewer();
+		}
 		
 		
 	}
 
 	protected boolean isValidated() {
+		
+		
+		Map<Integer, String> month = new HashMap<Integer, String>();
+		month.put(1, "Jan");
+		month.put(2, "Feb");
+		month.put(3, "Mar");
+		month.put(4, "Apr");
+		month.put(5, "May");
+		month.put(6, "Jun");
+		month.put(7, "Jul");
+		month.put(8, "Aug");
+		month.put(9, "Sep");
+		month.put(10, "Oct");
+		month.put(11, "Nov");
+		month.put(12, "Dec");
+		
 		// TODO Auto-generated method stub
 		if(cb_title.getSelectedItem().toString() == "Select Title") {
 			JOptionPane.showMessageDialog(null, "Please select a title", "Required Field Message", JOptionPane.INFORMATION_MESSAGE);
@@ -496,10 +512,19 @@ public class NewPatientView extends JFrame {
 			gender = "Female";
 		}
 		
-		date = Helper.dateFormatter("YYYY-MM-dd", date.toString());
-		DateFormat df = new SimpleDateFormat("YYYY-MM-dd");
-		try {
-			Date nd = (Date) df.parse(date);
+		String[] d = date.split(", ");
+		String[] m = d[0].split(" ");
+		String mthNum = "";
+		System.out.println("Before format: "+d[0]+" / "+d[1]);
+		
+		for (Entry<Integer, String> entry : month.entrySet()) {
+            if (entry.getValue().equals(m[0])) {
+                mthNum = (entry.getKey()<10?"0"+entry.getKey():Integer.toString(entry.getKey()));
+            }
+		}
+            String sd =  d[1]+"-"+mthNum+"-"+m[1];
+		date = sd;
+		
 			person = new Person(
 					cb_title.getSelectedItem().toString(),
 					tf_firstname.getText().toString(),
@@ -511,19 +536,13 @@ public class NewPatientView extends JFrame {
 					tf_address.getText().toString(),
 					tf_city.getText().toString(),
 					 tf_country.getText().toString());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 												
 		return true;
 	}
 	
-	public void setParent(JFrame parent) {
-		parent.setVisible(false);
-		this.parent = parent;
-		menu.setExitWindow(parent);
-		
+	public void setParent(MainView parent) {
+		this.parent = parent;		
 	}
 }
