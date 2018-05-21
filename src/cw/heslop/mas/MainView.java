@@ -19,6 +19,7 @@ import javax.swing.border.LineBorder;
 import cw.heslop.mas.component.ApplicationMenu;
 import cw.heslop.mas.component.AppointmentItem;
 import cw.heslop.mas.component.AppointmentList;
+import cw.heslop.mas.component.BMIChecker;
 import cw.heslop.mas.component.UserProfile;
 import cw.heslop.mas.objects.DatabaseConnection;
 import cw.heslop.mas.objects.Person;
@@ -48,6 +49,7 @@ public class MainView extends JFrame {
 	public boolean isPatientViewer = false;
 	public boolean isNewPatientViewer;
 	public UserProfile us;
+	private BMIChecker bmi;
 	
 
 	public JPanel getPl_main() {
@@ -232,10 +234,14 @@ public class MainView extends JFrame {
 				if(chckbxCollapseSideBar.isSelected()) {
 					pl_sidebar.setBounds(0, 0, 0, 541);
 					pl_main.setBounds(272, 0, 900, 541);
+					bmi = new BMIChecker();
+					bmi.setBounds(0, 0, 274, 541);
+					pl_home_options.add(bmi);
 				}
 				else {
 					pl_sidebar.setBounds(0, 0, 274, 541);
 					pl_main.setBounds(272, 0, 616, 541);
+					bmi.setVisible(false);
 				}
 			}
 		});
